@@ -8,7 +8,7 @@ namespace Car_Sharing.Data
     {
         public DbSet<Company> Companies { get; set; }
         public DbSet<Car> Cars { get; set; }
-        IConfiguration config;
+        readonly IConfiguration config;
 
         public EntityFramework()
         {

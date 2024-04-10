@@ -12,8 +12,10 @@ namespace Car_Sharing.Data
         public bool SaveChanges();
 
         public IEnumerable<Company> GetCompanies();
-        public void AddCompany<T>(T entityAdd);
-
-
+        public Company GetSingleCompany(int id);
+        public void AddEntity<T>(T entityAdd);
+        public IEnumerable<Car> GetCars();
+        public Car GetSingleCar(int id);
+       
     }
 }

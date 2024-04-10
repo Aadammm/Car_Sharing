@@ -18,13 +18,24 @@ namespace Car_Sharing.Data
         {
             return ef.Companies;
         }
+        public IEnumerable<Car> GetCars()
+        {
+            return ef.Cars;
+        }
 
-        public void AddCompany<T>(T entityAdd)
+        public Company GetSingleCompany(int id )
+        {
+            return ef.Companies.Where(c=>c.Id==id).FirstOrDefault();
+        } 
+        public Car GetSingleCar(int id)
+        {
+           return ef.Cars.Where(c => c.Id == id).FirstOrDefault();
+        }
+
+        public void AddEntity<T>(T entityAdd)
         {
             if(entityAdd!=null)
             ef.Add(entityAdd);
         }
-        
-
     }
 }

@@ -8,8 +8,8 @@ namespace Car_Sharing
 {
     internal class Car
     {
-        int Id { get; set; }
-        string Name { get; set; }
-        int Company_Id { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public int Company_Id { get; set; }
     }
 }
