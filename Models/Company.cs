@@ -4,12 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Car_Sharing
+namespace Car_Sharing.Models
 {
-    internal class Customer
+    internal class Company
     {
         public int Id { get; set; }
         public string? Name { get; set; }
-        public int Rented_Car_Id{get;set;}
+
+        public Company()
+        {
+
+        }
     }
 }

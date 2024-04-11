@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Car_Sharing
+namespace Car_Sharing.Models
 {
     internal class Car
     {

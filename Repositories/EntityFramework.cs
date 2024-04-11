@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Car_Sharing.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
 
@@ -6,9 +7,10 @@ namespace Car_Sharing.Data
 {
     internal class EntityFramework : DbContext
     {
-        public DbSet<Company> Companies { get; set; }
-        public DbSet<Car> Cars { get; set; }
-        public DbSet<Customer> Customers{get;set;}
+    
+        //public DbSet<Company> Companies { get; set; }
+        //public DbSet<Car> Cars { get; set; }
+        //public DbSet<Customer> Customers{get;set;}
         readonly IConfiguration config;
 
         public EntityFramework()
