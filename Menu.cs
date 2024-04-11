@@ -14,10 +14,16 @@ namespace Car_Sharing
         ICompanyRepository repository = new CompanyRepository();
         public void StartMenu()
         {
-            Console.WriteLine("1. Log in as a manager\r\n0. Exit");
+            Console.WriteLine("1. Log in as a manager\r\n2. Log in as a customer\r\n3. Create a customer\r\n0. Exit");
             switch (Console.ReadKey().KeyChar)
             {
                 case '1':
+                    ManagerMenu();
+                    break;
+                           case '2':
+                    ManagerMenu();
+                    break;
+                case '3':
                     ManagerMenu();
                     break;
                 case '0':
@@ -26,6 +32,14 @@ namespace Car_Sharing
                 default:
                     break;
             }
+        }
+        public void CreateCustomer()
+        {
+
+        }
+        public void CustomerMenu()
+        {
+
         }
 
         public void ManagerMenu()

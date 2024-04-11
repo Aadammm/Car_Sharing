@@ -8,6 +8,7 @@ namespace Car_Sharing.Data
     {
         public DbSet<Company> Companies { get; set; }
         public DbSet<Car> Cars { get; set; }
+        public DbSet<Customer> Customers{get;set;}
         readonly IConfiguration config;
 
         public EntityFramework()
@@ -31,6 +32,7 @@ namespace Car_Sharing.Data
             modelBuilder.HasDefaultSchema("Project");
             modelBuilder.Entity<Company>().ToTable("Company").HasKey("Id");
             modelBuilder.Entity<Car>().ToTable("Car").HasKey("Id");
+            modelBuilder.Entity<Customer>().ToTable("Customer").HasKey("Id");
 
 
 

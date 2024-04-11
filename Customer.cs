@@ -6,14 +6,10 @@ using System.Threading.Tasks;
 
 namespace Car_Sharing
 {
-    internal class Company
+    internal class Customer
     {
         public int Id { get; set; }
         public string? Name { get; set; }
-
-        public Company()
-        {
-
-        }
+        public int Rented_Car_Id{get;set;}
     }
 }
