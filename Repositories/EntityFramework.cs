@@ -34,7 +34,7 @@ namespace Car_Sharing.Data
             modelBuilder.HasDefaultSchema("Project");
             modelBuilder.Entity<Company>().ToTable("Company").HasKey("Id");
             modelBuilder.Entity<Car>().ToTable("Car").HasKey("Id");
-            modelBuilder.Entity<Customer>().ToTable("Customer").HasKey("Id");
+            modelBuilder.Entity<Customer>().ToTable("Customer").HasKey("Id");//.HasForeignKey("Rented_Car_Id");
 
 
 
