@@ -19,6 +19,5 @@ namespace Car_Sharing.Repositories.Interface
         public  Customer? GetById(int id);
 
         public  void RemoveEntity(Customer entity);
-
     }
 }

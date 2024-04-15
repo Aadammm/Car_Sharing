@@ -16,10 +16,10 @@ namespace Car_Sharing.Repositories
         {
             _ef = new EntityFramework();
         }
-
+        
         public virtual IEnumerable<T> GetAll()
         {
-            return _ef.Set<T>().ToList();
+            return _ef.Set<T>();
         }
         public virtual bool SaveChanges()
         {
@@ -34,11 +34,20 @@ namespace Car_Sharing.Repositories
             if (entity != null)
                 _ef.Add(entity);
         }
+        //public virtual T GetByName(string name )
+        //{
+        //    return GetAll().Where(entity=>entity.N)
+        //        }
 
         public virtual void RemoveEntity(T entity)
         {
             if (entity != null)
                 _ef.Remove(entity);
         }
+        //public virtual void UpdateEntity<T>(T entity)
+        //{
+        //    if (entity != null)
+        //        _ef.Update(entity);
+        //}   
     }
 }

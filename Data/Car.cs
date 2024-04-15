@@ -9,7 +9,7 @@ namespace Car_Sharing.Models
     internal class Car
     {
         public int Id { get; set; }
-        public string Name { get; set; }
+        public string? Name { get; set; }
         public int Company_Id { get; set; }
     }
 }

@@ -1,16 +1,24 @@
 ﻿using Car_Sharing.Data;
-using Car_Sharing.Models;
-using Car_Sharing.Repositories;
 using Car_Sharing.Repositories.Interface;
+using Car_Sharing.Repositories;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Car_Sharing.Models;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using System.Runtime.ConstrainedExecution;
 
 namespace Car_Sharing
 {
     internal class Menu
     {
-        const string emptyListMessageFormat = "The {0} list is empty!";
-        const string entityCreatedMessageFormat = "The {0} was created!";
-        const string entityCreationFailedMessageFormat = "Failed to add the {0}.";
-        const string entityNameRequiredMessageFormat = "You must enter a name for the {0}.";
+        int listCount;
+        const string emptyListMessageFormat = "The {0} list is empty!\n";
+        const string entityCreatedMessageFormat = "The {0} was created!\n";
+        const string entityCreationFailedMessageFormat = "Failed to add the {0}.\n";
+        const string entityNameRequiredMessageFormat = "You must enter a name for the {0}.\n";
         const string promptForEntityNameFormat = "Write name of {0}: ";
         const string selectEntityPromptFormat = "Choose a {0}";
         ICarRepository carRepository;
@@ -22,112 +30,151 @@ namespace Car_Sharing
             companyRepository = new CompanyRepository();
             customerRepository = new CustomerRepository();
         }
+        public int Choise(int numberOfChoise)
+        {
+            Console.Write(">>");
+            int choise;
+            while (int.TryParse(Console.ReadLine(), out choise) && choise < 0 || choise > numberOfChoise)
+            {
+                Console.WriteLine("Please choise correct number");
+            }
+            Console.WriteLine();
+            return choise;
+
+        }
         public void StartMenu()
         {
             Console.WriteLine("1. Log in as a manager\n2. Log in as a customer\n3. Create a customer\n0. Exit");
-            switch (Console.ReadKey().KeyChar)
+            switch (Choise(3))
             {
-                case '1':
+                case 1:
                     LogAsManager();
                     break;
-                case '2':
-                    LogAsCustomer();
+                case 2:
+                    CustomerMenu(LogAsCustomer());
                     break;
-                case '3':
+                case 3:
                     CreateCustomer();
-                    break;
-                case '0':
-                    //exit aplication
-                    break;
-                default:
-                    break;
-            }
-        }
-        public void LogAsManager()
-        {
-            Console.WriteLine("1. Company list\n2. Create a company\n0. Back");
-            switch (Console.ReadKey().KeyChar)
-            {
-                case '1':
-                   var companies= CompanyList();
-                    ChooseCompany(companies);
-
-                    break;
-                case '2':
-                    CreateCompany();
-                    LogAsManager();
-                    break;
-                case '0':
                     StartMenu();
                     break;
-                default:
+                case 0:
                     break;
             }
         }
-        public Company ChooseCompany(IEnumerable<Company> companies)
+        private Customer LogAsCustomer()//null return 
         {
-            Console.WriteLine("Choose the company:");
-            foreach (var company in companies)
+            var customers = customerRepository.GetAll().ToList();
+            if (customers.Count() > 0)
             {
-                Console.WriteLine($"{company.Id}. {company.Name}");
-            }
-            Console.WriteLine("0. Back");
-            int index = int.Parse(Console.ReadLine());
-            return companies.Where(company => company.Id == index).FirstOrDefault();
-        }
-        public void CompanyMenu(Company company)
-        {
-            Console.WriteLine("{0} Company", company.Name);
-            Console.WriteLine("1. Car list\n2. Create a car\n0. Back");
-            switch (Console.ReadKey().KeyChar)
-            {
-                case '1':
-                    CarsList(company.Id);
-                    CompanyMenu(company);
-                    break;
-                case '2':
-                    CreateCar(company.Id);
-                    CompanyMenu(company);
-                    break;
-                case '0':
-                    LogAsManager();
-                    break;
-                default:
-                    break;
-            }
-        }
-        public IEnumerable<Company> CompanyList()
-        {
-         
-                return companyRepository.GetAll();
-        }
-        public void ChooseCompany()
-        {
-
-        }
-        public void CreateCompany()
-        {
-            Console.Write(promptForEntityNameFormat, nameof(Company));
-            string? nameOfCompany = Console.ReadLine();
-            if (!string.IsNullOrEmpty(nameOfCompany))
-            {
-                companyRepository.AddEntity(new Company()
+                Console.WriteLine(selectEntityPromptFormat, nameof(Customer));
+                for (int i = 0; i < customers.Count(); i++)
                 {
-                    Name = nameOfCompany
-                });
-                if (companyRepository.SaveChanges())
-                {
-                    Console.WriteLine(entityCreatedMessageFormat, nameof(Company));
+                    Console.WriteLine($"{i + 1}. {customers[i].Name}");
                 }
-                else
-                    Console.WriteLine(entityCreationFailedMessageFormat, nameof(Company));
+                Console.WriteLine("0. Back");
+                int index = Choise(customers.Count());
+                if (index == 0)
+                    return null;
+
+                //nefunguje vyhladavat podla id 
+                // Customer customer = customerRepository.GetById(index);
+                return customers[index - 1];
+            }
+            Console.WriteLine(emptyListMessageFormat, nameof(Customer));
+            return null;
+        }
+        private void RentCar(Customer customer)//uvidime ci bude fungovat update takymto sposobom
+        {
+            if (customer.Rented_Car_Id == null)
+            {
+
+                Car car = CarsList(CompanyList().Id, true);
+                if (car != null)
+                {
+                    customer.Rented_Car_Id = car.Id;
+                    if (customerRepository.SaveChanges())
+                    {
+                        Console.WriteLine("You rented {0}\n", car.Name);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Failed rent a car\n");
+                    }
+                }
             }
             else
-                Console.WriteLine(entityNameRequiredMessageFormat, nameof(Company));
+            {
+            Console.WriteLine("You've already rented a car!\n");
+            }
+            CustomerMenu(customer);
 
         }
-
-        public void CreateCustomer()
+        private void RentedCar(Customer customer)
+        {
+            if (customer.Rented_Car_Id != null)
+            {
+                //var car = carRepository.GetAll().Where(c => c.Id == customer.Rented_Car_Id).FirstOrDefault();
+                //var company=companyRepository.GetAll().Where(c => c.Id == car.Company_Id).FirstOrDefault();
+                var result = carRepository.GetAll()
+                       .Where(c => c.Id == customer.Rented_Car_Id)
+                       .Join(companyRepository.GetAll(),
+                             car => car.Company_Id,      // Foreign key v Car
+                             company => company.Id,     // Primary key v Company
+                             (car, company) => new      // Výsledok joinu
+                             {
+                                 CarName = car.Name,
+                                 CompanyName = company.Name
+                             })
+                       .FirstOrDefault();
+                Console.WriteLine("Your rented car:\n{0}\nCompany:\n{1}\n", result.CarName, result.CompanyName);
+            }
+            else
+            {
+                Console.WriteLine("You didn't rent a car!\n");
+            }
+        }
+        private void ReturnRentedCar(Customer customer)
+        {
+            customer.Rented_Car_Id = null;
+            if (customerRepository.SaveChanges())
+            {
+                Console.WriteLine("You've returned a rented car!\n");
+            }
+            else
+            {
+                Console.WriteLine("Failed return a car\n");
+            }
+        }
+        private void CustomerMenu(Customer customer)
+        {
+            if (customer != null)
+            {
+                Console.WriteLine("1. Rent a car\n2. Return a rented car\n3. My rented car\n0. Back");
+                switch (Choise(3))
+                {
+                    case 1:
+                        RentCar(customer);
+                        CustomerMenu(customer);
+                        break;
+                    case 2:
+                        ReturnRentedCar(customer);
+                        CustomerMenu(customer);
+                        break;
+                    case 3:
+                        RentedCar(customer);
+                        CustomerMenu(customer);
+                        break;
+                    case 0:
+                        StartMenu();
+                        break;
+                }
+            }
+            else
+            {
+                StartMenu();
+            }
+        }
+        private void CreateCustomer()
         {
             Console.Write(promptForEntityNameFormat, nameof(Customer));
             string? nameOfCustomer = Console.ReadLine();
@@ -148,104 +195,148 @@ namespace Car_Sharing
             else
                 Console.WriteLine(entityNameRequiredMessageFormat, nameof(Customer));
         }
-        public void CreateCar(int companyId)
+        private void LogAsManager()
         {
-            Console.WriteLine("Enter the car name:");
-            carRepository.AddEntity(new Car()
+            Console.WriteLine("1. Company list\n2. Create a company\n0. Back");
+            switch (Choise(3))
             {
-                Name = Console.ReadLine(),
-                Company_Id = companyId
-            });
-            if (companyRepository.SaveChanges())
-            {
-                Console.WriteLine(entityCreatedMessageFormat, nameof(Car));
+                case 1:
+                    CompanyMenu(CompanyList());
+                    break;
+                case 2:
+                    CreateCompany();
+                    LogAsManager();
+                    break;
+                case 0:
+                    StartMenu();
+                    break;
+                default:
+                    break;
             }
-            else
-                Console.WriteLine(entityCreationFailedMessageFormat, nameof(Car));
         }
 
-
-        public void LogAsCustomer()
+        private void CompanyMenu(Company company)//
         {
-            var customers = customerRepository.GetAll();
-            if (customers.Count() > 0)
+            if (company != null)
             {
-
-                Console.WriteLine(selectEntityPromptFormat, nameof(Customer));
-                foreach (var customer in customers)
+                Console.WriteLine("{0} Company", company.Name);
+                Console.WriteLine("1. Car list\n2. Create a car\n0. Back");
+                switch (Choise(3))
                 {
-                    Console.WriteLine("{0}. {1}", customer.Id, customer.Name);
+                    case 1:
+                        CarsList(company.Id, false);//vrati bud kolekciu alebo null 
+                        CompanyMenu(company);
+                        break;
+                    case 2:
+                        CreateCar(company.Id);
+                        CompanyMenu(company);
+                        break;
+                    case 0:
+                        LogAsManager();
+                        break;
+                    default:
+                        break;
                 }
-                int index = int.Parse(Console.ReadLine());
-                if (index > 0)
-                    //nefunguje vyhladavat podla id 
-                    //Customer customer = customerRepository.GetById(index);
-                    CustomerMenu(customers.Where(id => id.Id == index).SingleOrDefault());
-
-                else
-                    LogAsManager();
             }
             else
             {
-                Console.WriteLine(emptyListMessageFormat, nameof(Customer));
+                Console.WriteLine(emptyListMessageFormat, nameof(company));
                 LogAsManager();
             }
         }
-        public void CustomerMenu(Customer customer)
+        private void CreateCompany()//
         {
-            Console.WriteLine("1. Rent a car\n2. Return a rented car\n3. My rented car\n0. Back");
-            switch (Console.ReadKey().KeyChar)
+            Console.Write(promptForEntityNameFormat, nameof(Company));
+            string? nameOfCompany = Console.ReadLine();
+            if (!string.IsNullOrEmpty(nameOfCompany))
             {
-                case '1':
-                    RentCar(customer);
-                    break;
-                case '2':
-                    ReturnRentedCar(customer);
-                    break;
-                case '3':
-                    RentedCar(customer);
-                    CustomerMenu(customer);
-                    break;
-                case '0':
-                    StartMenu();
-                    break;
+                companyRepository.AddEntity(new Company()
+                {
+                    Name = nameOfCompany
+                });
+                if (companyRepository.SaveChanges())
+                {
+                    Console.WriteLine(entityCreatedMessageFormat, nameof(Company));
+                }
+                else
+                    Console.WriteLine(entityCreationFailedMessageFormat, nameof(Company));
             }
+            else
+                Console.WriteLine(entityNameRequiredMessageFormat, nameof(Company));
         }
-        //tu opravit aby company list zobrazoval iba company 
-        public void RentCar(Customer customer)
+        private Car CarsList(int companyId, bool choice)
         {
-            CompanyList();
-
-        }
-
-        public void ReturnRentedCar(Customer customer)
-        {
-
-        }
-        public void RentedCar(Customer customer)
-        {
-
-            if (customer.Rented_Car_Id > 0)
-            {
-
-            }
-            Console.WriteLine("You didn't rent a car!\n");
-          
-        }
-        public void CarsList(int companyId)
-        {
-            var cars = carRepository.GetAll().Where(car => car.Company_Id == companyId);
-            if (cars.Count() > 0)
+            var cars = carRepository.GetAll().Where(car => car.Company_Id == companyId).ToList();
+            listCount = cars.Count();
+            if (listCount > 0)
             {
                 Console.WriteLine("Car list:");
-                foreach (var car in cars)
-                    Console.WriteLine("{0}. {1}", car.Id, car.Name);
+                for (int i = 0; i < listCount; i++)
+                {
+                    Console.WriteLine("{0}. {1}", i + 1, cars[i].Name);
+                }
+                if (choice)
+                {
+                    Console.WriteLine("0. Back");
+                    int index = Choise(listCount);
+                    if (index > 0)
+                        return cars[index - 1];
+                }
+                return null;
+
             }
-            Console.WriteLine(emptyListMessageFormat, nameof(Car));
+            else
+                Console.WriteLine(emptyListMessageFormat, nameof(Car));
+            return null;
         }
+        private Company CompanyList()//return null 
+        {
+            var companies = companyRepository.GetAll().ToList();
+            listCount = companies.Count();
+            if (listCount > 0)
+            {
 
+                Console.WriteLine(selectEntityPromptFormat, nameof(Company));
+                for (int i = 0; i < listCount; i++)
+                {
+                    Console.WriteLine($"{i + 1}. {companies[i].Name}");
+                }
+                Console.WriteLine("0. Back");
+                int index = Choise(listCount);
+                if (index == 0)
+                    return null;
 
+                return companies[index - 1];
+            }
+            else
+                Console.WriteLine(emptyListMessageFormat, nameof(Company));
+            return null;
 
+        }
+        private void CreateCar(int companyId)
+        {
+            Console.WriteLine("Enter the car name:");
+            string name = Console.ReadLine();
+            if (!string.IsNullOrEmpty(name))
+            {
+                if (carRepository.GetAll().Where(c => c.Name == name) == null)
+                {
+                    carRepository.AddEntity(new Car()
+                    {
+                        Name = Console.ReadLine(),
+                        Company_Id = companyId
+                    });
+                    if (carRepository.SaveChanges())
+                    {
+                        Console.WriteLine(entityCreatedMessageFormat, nameof(Car));
+                    }
+                    else
+                        Console.WriteLine(entityCreationFailedMessageFormat, nameof(Car));
+                }
+                else
+                    Console.WriteLine("Car already exists");
+            }
+        }
 
     }
 }
