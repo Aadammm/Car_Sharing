@@ -77,8 +77,7 @@ namespace Car_Sharing
                 if (index == 0)
                     return null;
 
-                //nefunguje vyhladavat podla id 
-                
+                customerRepository.LoadSingleReference(customers[index - 1]);
                 return customers[index - 1];
             }
             Console.WriteLine(emptyListMessageFormat, nameof(Customer));
@@ -89,12 +88,13 @@ namespace Car_Sharing
             if (customer.Rented_Car_Id == null)
             {
 
-                Car car = CarsList(CompanyList().Id, true);
+                Car car = CarsList(CompanyList(), true);
                 if (car != null)
                 {
                     customer.Rented_Car_Id = car.Id;
                     if (customerRepository.SaveChanges())
                     {
+                       customerRepository.LoadSingleReference(customer);
                         Console.WriteLine("You rented {0}\n", car.Name);
                     }
                     else
@@ -107,27 +107,15 @@ namespace Car_Sharing
             {
                 Console.WriteLine("You've already rented a car!\n");
             }
-            CustomerMenu(customer);
 
         }
         private void RentedCar(Customer customer)
         {
             if (customer.Rented_Car_Id != null)
             {
-                //var car = carRepository.GetAll().Where(c => c.Id == customer.Rented_Car_Id).FirstOrDefault();
-                //var company=companyRepository.GetAll().Where(c => c.Id == car.Company_Id).FirstOrDefault();
-                var result = carRepository.GetAll()
-                       .Where(c => c.Id == customer.Rented_Car_Id)
-                       .Join(companyRepository.GetAll(),
-                             car => car.Company_Id,      // Foreign key v Car
-                             company => company.Id,     // Primary key v Company
-                             (car, company) => new      // Výsledok joinu
-                             {
-                                 CarName = car.Name,
-                                 CompanyName = company.Name
-                             })
-                       .FirstOrDefault();
-                Console.WriteLine("Your rented car:\n{0}\nCompany:\n{1}\n", result.CarName, result.CompanyName);
+                Car? car = customer.Car;
+                carRepository.LoadSingleReference(car);
+                Console.WriteLine("Your rented car:\n{0}\nCompany:\n{1}\n", car.Name, car.Company.Name);
             }
             else
             {
@@ -136,6 +124,8 @@ namespace Car_Sharing
         }
         private void ReturnRentedCar(Customer customer)
         {
+            if (customer.Car != null)
+            {
             customer.Rented_Car_Id = null;
             if (customerRepository.SaveChanges())
             {
@@ -145,6 +135,9 @@ namespace Car_Sharing
             {
                 Console.WriteLine("Failed return a car\n");
             }
+            }
+            else
+            Console.WriteLine("You didn't rent a car!\n");
         }
         private void CustomerMenu(Customer? customer)
         {
@@ -225,7 +218,7 @@ namespace Car_Sharing
                 switch (Choise(3))
                 {
                     case 1:
-                        CarsList(company.Id, false);//vrati bud kolekciu alebo null 
+                        CarsList(company, false);
                         CompanyMenu(company);
                         break;
                     case 2:
@@ -243,13 +236,6 @@ namespace Car_Sharing
             {
                 Console.WriteLine(emptyListMessageFormat, nameof(company));
                 LogAsManager();
-            }
-        }
-        private void SkuskaCompanyCarsList(Company company)
-        {
-            for (int i = 0; i < company.Cars.Count; i++)
-            {
-                Console.WriteLine(i+" "+company.Cars[i].Name);
             }
         }
         private void CreateCompany()
@@ -272,9 +258,9 @@ namespace Car_Sharing
             else
                 Console.WriteLine(entityNameRequiredMessageFormat, nameof(Company));
         }
-        private Car CarsList(int companyId, bool choice)
+        private Car CarsList(Company company, bool choice)
         {
-            var cars = carRepository.GetAll().Where(car => car.Company_Id == companyId).ToList();
+            var cars = company.Cars;
             int listCount = cars.Count;
             if (listCount > 0)
             {
@@ -313,8 +299,8 @@ namespace Car_Sharing
                 int index = Choise(listCount);
                 if (index == 0)
                     return null;
-
-                return companyRepository.GetCompanyWithCars(companies[index - 1]);//return companies[index-1];
+                companyRepository.LoadAllReferences(companies[index - 1]);
+                return  companies[index-1];
             }
             else
                 Console.WriteLine(emptyListMessageFormat, nameof(Company));
