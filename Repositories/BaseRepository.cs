@@ -1,10 +1,7 @@
 ﻿using Car_Sharing.Data;
+using Car_Sharing.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Car_Sharing.Repositories
 {
@@ -16,7 +13,6 @@ namespace Car_Sharing.Repositories
         {
             _ef = new EntityFramework();
         }
-        
         public virtual IEnumerable<T> GetAll()
         {
             return _ef.Set<T>();
@@ -34,20 +30,10 @@ namespace Car_Sharing.Repositories
             if (entity != null)
                 _ef.Add(entity);
         }
-        //public virtual T GetByName(string name )
-        //{
-        //    return GetAll().Where(entity=>entity.N)
-        //        }
-
         public virtual void RemoveEntity(T entity)
         {
             if (entity != null)
                 _ef.Remove(entity);
         }
-        //public virtual void UpdateEntity<T>(T entity)
-        //{
-        //    if (entity != null)
-        //        _ef.Update(entity);
-        //}   
     }
 }

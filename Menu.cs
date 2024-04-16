@@ -14,21 +14,21 @@ namespace Car_Sharing
 {
     internal class Menu
     {
-        int listCount;
         const string emptyListMessageFormat = "The {0} list is empty!\n";
         const string entityCreatedMessageFormat = "The {0} was created!\n";
         const string entityCreationFailedMessageFormat = "Failed to add the {0}.\n";
         const string entityNameRequiredMessageFormat = "You must enter a name for the {0}.\n";
         const string promptForEntityNameFormat = "Write name of {0}: ";
         const string selectEntityPromptFormat = "Choose a {0}";
-        ICarRepository carRepository;
-        ICompanyRepository companyRepository;
-        ICustomerRepository customerRepository;
+        readonly ICarRepository carRepository;
+        readonly ICompanyRepository companyRepository;
+        readonly ICustomerRepository customerRepository;
         public Menu()
         {
             carRepository = new CarRepository();
             companyRepository = new CompanyRepository();
             customerRepository = new CustomerRepository();
+            
         }
         public int Choise(int numberOfChoise)
         {
@@ -64,20 +64,21 @@ namespace Car_Sharing
         private Customer LogAsCustomer()//null return 
         {
             var customers = customerRepository.GetAll().ToList();
-            if (customers.Count() > 0)
+            int listCount = customers.Count;
+            if (listCount > 0)
             {
                 Console.WriteLine(selectEntityPromptFormat, nameof(Customer));
-                for (int i = 0; i < customers.Count(); i++)
+                for (int i = 0; i < listCount; i++)
                 {
                     Console.WriteLine($"{i + 1}. {customers[i].Name}");
                 }
                 Console.WriteLine("0. Back");
-                int index = Choise(customers.Count());
+                int index = Choise(listCount);
                 if (index == 0)
                     return null;
 
                 //nefunguje vyhladavat podla id 
-                // Customer customer = customerRepository.GetById(index);
+                
                 return customers[index - 1];
             }
             Console.WriteLine(emptyListMessageFormat, nameof(Customer));
@@ -104,7 +105,7 @@ namespace Car_Sharing
             }
             else
             {
-            Console.WriteLine("You've already rented a car!\n");
+                Console.WriteLine("You've already rented a car!\n");
             }
             CustomerMenu(customer);
 
@@ -145,7 +146,7 @@ namespace Car_Sharing
                 Console.WriteLine("Failed return a car\n");
             }
         }
-        private void CustomerMenu(Customer customer)
+        private void CustomerMenu(Customer? customer)
         {
             if (customer != null)
             {
@@ -215,7 +216,7 @@ namespace Car_Sharing
             }
         }
 
-        private void CompanyMenu(Company company)//
+        private void CompanyMenu(Company company)
         {
             if (company != null)
             {
@@ -244,7 +245,14 @@ namespace Car_Sharing
                 LogAsManager();
             }
         }
-        private void CreateCompany()//
+        private void SkuskaCompanyCarsList(Company company)
+        {
+            for (int i = 0; i < company.Cars.Count; i++)
+            {
+                Console.WriteLine(i+" "+company.Cars[i].Name);
+            }
+        }
+        private void CreateCompany()
         {
             Console.Write(promptForEntityNameFormat, nameof(Company));
             string? nameOfCompany = Console.ReadLine();
@@ -267,7 +275,7 @@ namespace Car_Sharing
         private Car CarsList(int companyId, bool choice)
         {
             var cars = carRepository.GetAll().Where(car => car.Company_Id == companyId).ToList();
-            listCount = cars.Count();
+            int listCount = cars.Count;
             if (listCount > 0)
             {
                 Console.WriteLine("Car list:");
@@ -292,7 +300,7 @@ namespace Car_Sharing
         private Company CompanyList()//return null 
         {
             var companies = companyRepository.GetAll().ToList();
-            listCount = companies.Count();
+            int listCount = companies.Count;
             if (listCount > 0)
             {
 
@@ -306,7 +314,7 @@ namespace Car_Sharing
                 if (index == 0)
                     return null;
 
-                return companies[index - 1];
+                return companyRepository.GetCompanyWithCars(companies[index - 1]);//return companies[index-1];
             }
             else
                 Console.WriteLine(emptyListMessageFormat, nameof(Company));
@@ -316,10 +324,10 @@ namespace Car_Sharing
         private void CreateCar(int companyId)
         {
             Console.WriteLine("Enter the car name:");
-            string name = Console.ReadLine();
+            string? name = Console.ReadLine();
             if (!string.IsNullOrEmpty(name))
             {
-                if (carRepository.GetAll().Where(c => c.Name == name) == null)
+                if (carRepository.GetByName(name)==null)
                 {
                     carRepository.AddEntity(new Car()
                     {

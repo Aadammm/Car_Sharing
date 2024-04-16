@@ -19,5 +19,8 @@ namespace Car_Sharing.Repositories.Interface
         public Company? GetById(int id);
 
         public void RemoveEntity(Company entity);
+        public Company? GetCompanyWithCars(Company company);
+        Company GetByName(string name);
+        public void LoadAllReferences(Company company);
     }
 }

@@ -10,14 +10,18 @@ namespace Car_Sharing.Repositories.Interface
 {
     internal interface ICustomerRepository
     {
-        public  void AddEntity(Customer entity);
+        public void AddEntity(Customer entity);
 
-        public  IEnumerable<Customer> GetAll();
+        public IEnumerable<Customer> GetAll();
 
-        public  bool SaveChanges();
+        public bool SaveChanges();
 
-        public  Customer? GetById(int id);
+        public Customer? GetById(int id);
 
-        public  void RemoveEntity(Customer entity);
+        public void RemoveEntity(Customer entity);
+        public Customer GetByName(string name);
+        public Customer? GetCustomerWithCar(Customer customer);
+        public void LoadSingleReference(Customer customer);
+
     }
 }

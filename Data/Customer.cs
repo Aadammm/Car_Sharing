@@ -11,5 +11,6 @@ namespace Car_Sharing.Models
         public int Id { get; set; }
         public string? Name { get; set; }
         public int? Rented_Car_Id { get; set; }
+        public Car? Car { get; set; }
     }
 }
