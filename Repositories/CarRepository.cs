@@ -21,9 +21,9 @@ namespace Car_Sharing.Repositories
             }
             return null;
         }
-        public Car? GetCarWithCompany(Car car)
+        public List<Car>? GetCompanyCars(Company company)
         {
-            return _ef.Cars.Include(car => car.Company).Where(c => c.Id == car.Id).FirstOrDefault();
+            return _ef.Cars.Include(car => car.Company).Where(c => c.Company_Id == company.Id).ToList();
         }
         public void LoadSingleReference(Car car )
         {

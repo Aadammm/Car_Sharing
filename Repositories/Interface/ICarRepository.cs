@@ -20,7 +20,7 @@ namespace Car_Sharing.Repositories.Interface
         public Car? GetById(int id);
         public void RemoveEntity(Car entity);
         public Car GetByName(string name);
-        public Car? GetCarWithCompany(Car car);
+        public List<Car>? GetCompanyCars(Company company);
         public void LoadSingleReference(Car car);
     }
 }

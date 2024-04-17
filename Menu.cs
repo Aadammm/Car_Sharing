@@ -91,10 +91,10 @@ namespace Car_Sharing
                 Car car = CarsList(CompanyList(), true);
                 if (car != null)
                 {
-                    customer.Rented_Car_Id = car.Id;
+                    customer.Car = car;
+                    customerRepository.LoadSingleReference(customer);
                     if (customerRepository.SaveChanges())
                     {
-                       customerRepository.LoadSingleReference(customer);
                         Console.WriteLine("You rented {0}\n", car.Name);
                     }
                     else
@@ -114,7 +114,6 @@ namespace Car_Sharing
             if (customer.Rented_Car_Id != null)
             {
                 Car? car = customer.Car;
-                carRepository.LoadSingleReference(car);
                 Console.WriteLine("Your rented car:\n{0}\nCompany:\n{1}\n", car.Name, car.Company.Name);
             }
             else
@@ -260,7 +259,8 @@ namespace Car_Sharing
         }
         private Car CarsList(Company company, bool choice)
         {
-            var cars = company.Cars;
+            var cars = carRepository.GetCompanyCars(company);
+           
             int listCount = cars.Count;
             if (listCount > 0)
             {
@@ -274,7 +274,9 @@ namespace Car_Sharing
                     Console.WriteLine("0. Back");
                     int index = Choise(listCount);
                     if (index > 0)
+                    {
                         return cars[index - 1];
+                    }
                 }
                 return null;
 
@@ -289,7 +291,6 @@ namespace Car_Sharing
             int listCount = companies.Count;
             if (listCount > 0)
             {
-
                 Console.WriteLine(selectEntityPromptFormat, nameof(Company));
                 for (int i = 0; i < listCount; i++)
                 {
@@ -299,7 +300,6 @@ namespace Car_Sharing
                 int index = Choise(listCount);
                 if (index == 0)
                     return null;
-                companyRepository.LoadAllReferences(companies[index - 1]);
                 return  companies[index-1];
             }
             else
@@ -317,7 +317,7 @@ namespace Car_Sharing
                 {
                     carRepository.AddEntity(new Car()
                     {
-                        Name = Console.ReadLine(),
+                        Name = name,
                         Company_Id = companyId
                     });
                     if (carRepository.SaveChanges())
