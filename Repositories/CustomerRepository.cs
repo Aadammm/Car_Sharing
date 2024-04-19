@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ namespace Car_Sharing.Repositories
 {
     internal class CustomerRepository : BaseRepository<Customer>, ICustomerRepository
     {
+        [return: MaybeNull]
         public Customer GetByName(string name)
         {
             Customer? customer = _ef.Customers.Where(a => a.Name == name).SingleOrDefault();

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ namespace Car_Sharing.Data
 {
     internal class CompanyRepository :BaseRepository<Company>, ICompanyRepository
     {
+        [return: MaybeNull]
         public Company GetByName(string name)
         {
             Company? company = _ef.Companies.Where(a => a.Name == name).SingleOrDefault();

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Car_Sharing.Models;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using System.Runtime.ConstrainedExecution;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Car_Sharing
 {
@@ -28,7 +29,7 @@ namespace Car_Sharing
             carRepository = new CarRepository();
             companyRepository = new CompanyRepository();
             customerRepository = new CustomerRepository();
-            
+
         }
         public int Choise(int numberOfChoise)
         {
@@ -61,6 +62,7 @@ namespace Car_Sharing
                     break;
             }
         }
+        [return: MaybeNull]
         private Customer LogAsCustomer()//null return 
         {
             var customers = customerRepository.GetAll().ToList();
@@ -88,7 +90,7 @@ namespace Car_Sharing
             if (customer.Rented_Car_Id == null)
             {
 
-                Car car = CarsList(CompanyList(), true);
+                Car? car = CarsList(CompanyList(), true);
                 if (car != null)
                 {
                     customer.Car = car;
@@ -125,18 +127,21 @@ namespace Car_Sharing
         {
             if (customer.Car != null)
             {
-            customer.Rented_Car_Id = null;
-            if (customerRepository.SaveChanges())
-            {
-                Console.WriteLine("You've returned a rented car!\n");
+                customer.Rented_Car_Id = null;
+                if (customerRepository.SaveChanges())
+                {
+                    Console.WriteLine("You've returned a rented car!\n");
+                }
+                else
+                {
+                    Console.WriteLine("Failed return a car\n");
+                }
             }
             else
             {
-                Console.WriteLine("Failed return a car\n");
+                Console.WriteLine("You didn't rent a car!\n");
+
             }
-            }
-            else
-            Console.WriteLine("You didn't rent a car!\n");
         }
         private void CustomerMenu(Customer? customer)
         {
@@ -257,11 +262,12 @@ namespace Car_Sharing
             else
                 Console.WriteLine(entityNameRequiredMessageFormat, nameof(Company));
         }
+        [return: MaybeNull]
         private Car CarsList(Company company, bool choice)
         {
             var cars = carRepository.GetCompanyCars(company);
-           
-            int listCount = cars.Count;
+
+            int listCount = cars.Count == null ? 0 : cars.Count ;
             if (listCount > 0)
             {
                 Console.WriteLine("Car list:");
@@ -285,6 +291,7 @@ namespace Car_Sharing
                 Console.WriteLine(emptyListMessageFormat, nameof(Car));
             return null;
         }
+        [return: MaybeNull]
         private Company CompanyList()//return null 
         {
             var companies = companyRepository.GetAll().ToList();
@@ -300,7 +307,7 @@ namespace Car_Sharing
                 int index = Choise(listCount);
                 if (index == 0)
                     return null;
-                return  companies[index-1];
+                return companies[index - 1];
             }
             else
                 Console.WriteLine(emptyListMessageFormat, nameof(Company));
@@ -313,7 +320,7 @@ namespace Car_Sharing
             string? name = Console.ReadLine();
             if (!string.IsNullOrEmpty(name))
             {
-                if (carRepository.GetByName(name)==null)
+                if (carRepository.GetByName(name) == null)
                 {
                     carRepository.AddEntity(new Car()
                     {

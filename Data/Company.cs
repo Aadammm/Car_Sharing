@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Car_Sharing.Models
 {
-    internal class Company
+    public class Company
     {
         public int Id { get; set; }
         public string? Name { get; set; }
-        public List<Car> Cars { get; set; } = new List<Car>();
+        public List<Car>? Cars { get; set; } = new List<Car>();
 
         public Company()
         {

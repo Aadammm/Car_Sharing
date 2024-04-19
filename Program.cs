@@ -1,25 +1,30 @@
-﻿using Car_Sharing;
-using Car_Sharing.Data;
-using Car_Sharing.Models;
-using Car_Sharing.Repositories;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Car_Sharing;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Mvc;
 using Car_Sharing.Repositories.Interface;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.Json;
-using System.ComponentModel.Design;
+using Car_Sharing.Repositories;
+using Car_Sharing.Models;
+var builder = WebApplication.CreateBuilder(args);
 
-//Car car = new Car();
-//ICarRepository repository = new CarRepository();
-//ICompanyRepository companyRepository = new CompanyRepository();
-//Company company = companyRepository.GetById(5);
-//List<Car> cars = repository.GetCompanyCars(company);
+builder.WebHost.UseUrls("http://localhost:5000", "https://localhost:5001");
 
-//foreach (var c in cars)
-//{
-//    Console.WriteLine(c.Name+ " ***"+c.Id + "  ***"  + c.Company_Id + "  ***" + c.Name);
-//}
+builder.Services.AddControllers();
+var app = builder.Build();
+//builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 
+// Configure the HTTP request pipeline.
+app.UseHttpsRedirection();
+app.UseAuthorization();
 
+app.MapControllers();
+app.UseRouting();
+//app.UseEndpoints(endpoints =>
+//{ 
+//    endpoints.MapControllers(); 
+//});
+app.Run();
 
 Menu menu = new Menu();
 menu.StartMenu();
