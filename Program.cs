@@ -2,29 +2,48 @@
 using Microsoft.AspNetCore.Hosting;
 using Car_Sharing;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Mvc;
-using Car_Sharing.Repositories.Interface;
-using Car_Sharing.Repositories;
-using Car_Sharing.Models;
+using Microsoft.Extensions.Hosting;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.WebHost.UseUrls("http://localhost:5000", "https://localhost:5001");
 
 builder.Services.AddControllers();
-var app = builder.Build();
-//builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
-// Configure the HTTP request pipeline.
+
+var app = builder.Build();
+if (app.Environment.IsDevelopment())
+{
+    //neotvara swagger , zistit preco 
+    app.UseSwagger();
+    app.UseSwaggerUI();
+    
+}
 app.UseHttpsRedirection();
 app.UseAuthorization();
-
 app.MapControllers();
-app.UseRouting();
-//app.UseEndpoints(endpoints =>
-//{ 
-//    endpoints.MapControllers(); 
-//});
 app.Run();
 
 Menu menu = new Menu();
 menu.StartMenu();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
