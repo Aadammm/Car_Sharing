@@ -32,6 +32,11 @@ namespace Car_Sharing.Repositories
             _ef.Entry(car).Reference(c=>c.Company).Load();
         }
 
+        //public Car? GetCarWithCompany(Car car)
+        //{
+        //    return _ef.Cars.Include(c=>c.Company).Where(c => c.Id == car.Company_Id).FirstOrDefault();
+        //}
+
 
 
     }

@@ -23,12 +23,12 @@ namespace Car_Sharing.ApiHelper.Controllers
             return customerRepository.GetAll();
         }
         [HttpGet("GetCustomerById/{CustomerId}")]
-        public ActionResult<Customer> GetCustomer(int CustomerId)
+        public Customer GetCustomer(int CustomerId)
         {
             Customer? customer = customerRepository.GetById(CustomerId);
             if (customer != null)
             {
-                return customerRepository.GetCustomerWithCar(customer);
+                return customer;
             }
             throw new Exception("Failed to Find customer");
         }
