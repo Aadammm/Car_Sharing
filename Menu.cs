@@ -116,7 +116,8 @@ namespace Car_Sharing
             if (customer.Rented_Car_Id != null)
             {
                 Car? car = customer.Car;
-                Console.WriteLine("Your rented car:\n{0}\nCompany:\n{1}\n", car.Name, car.Company.Name);
+                carRepository.LoadSingleReference(car);
+                Console.WriteLine("Your rented car:\n{0}\nCompany:\n{1}\n", car.Name, car.CarCompany.Name);
             }
             else
             {

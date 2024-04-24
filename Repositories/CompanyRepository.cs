@@ -26,11 +26,15 @@ namespace Car_Sharing.Data
         }
         public Company? GetCompanyWithCars(Company company)
         {
-            return _ef.Companies.Include(c => c.Cars).Where(c => c.Id == company.Id).FirstOrDefault();
+            return _ef.Companies.Include(c => c.ListOfCompanyCars).Where(c => c.Id == company.Id).FirstOrDefault();
         }
         public void LoadAllReferences(Company company)
         {
-            _ef.Entry(company).Collection(c => c.Cars).Load();
+            _ef.Entry(company).Collection(c => c.ListOfCompanyCars).Load();
+        }
+        public override Company? GetById(int id)
+        {
+            return _ef.Companies.Include(c => c.ListOfCompanyCars).SingleOrDefault(c => c.Id == id);
         }
     }
 }

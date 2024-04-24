@@ -25,17 +25,18 @@ namespace Car_Sharing.Repositories
         }
         public List<Car>? GetCompanyCars(Company company)
         {
-            return _ef.Cars.Include(car => car.Company).Where(c => c.Company_Id == company.Id).ToList();
+            return _ef.Cars.Include(car => car.CarCompany).Where(c => c.Company_Id == company.Id).ToList();
         }
         public void LoadSingleReference(Car car )
         {
-            _ef.Entry(car).Reference(c=>c.Company).Load();
+            _ef.Entry(car).Reference(c=>c.CarCompany).Load();
         }
 
-        //public Car? GetCarWithCompany(Car car)
-        //{
-        //    return _ef.Cars.Include(c=>c.Company).Where(c => c.Id == car.Company_Id).FirstOrDefault();
-        //}
+        public override Car? GetById(int id)
+        {
+            return _ef.Cars.Include(c => c.CarCompany).SingleOrDefault(c => c.Id == id);
+        }
+
 
 
 

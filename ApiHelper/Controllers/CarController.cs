@@ -1,4 +1,6 @@
-﻿using Car_Sharing.Models;
+﻿using AutoMapper;
+using Car_Sharing.Dtos;
+using Car_Sharing.Models;
 using Car_Sharing.Repositories;
 using Car_Sharing.Repositories.Interface;
 using Microsoft.AspNetCore.Mvc;
@@ -12,25 +14,38 @@ namespace Car_Sharing.ApiHelper.Controllers
     public class CarController : ControllerBase
     {
         readonly ICarRepository carRepository;
-
+        IMapper mapper;
         public CarController(IConfiguration config)
         {
             carRepository = new CarRepository();
+            mapper = new Mapper(new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<CarDtoAdd, Car>(); 
+                cfg.CreateMap<Car, CarBasicDto>();
+                cfg.CreateMap<Company, CompanyBasicDto>();
+                cfg.CreateMap<Car,CarWithCompanyDto>()
+                .ForMember(dest=>dest.Company,opt=>opt.MapFrom(src=>src.CarCompany));
+
+            }));
         }
         [HttpGet("GetCars")]
-        public IEnumerable<Car> GetCars()
+        public IEnumerable<CarBasicDto> GetCars()
         {
-            return carRepository.GetAll();
+            var cars= carRepository.GetAll();
+         
+            IEnumerable<CarBasicDto> basicCars = mapper.Map<IEnumerable<CarBasicDto>>(cars);
+            return basicCars;
         }
         [HttpGet("GetCarById/{carId}")]
-        public ActionResult<Car> GetCar(int carId)
+        public ActionResult<CarWithCompanyDto> GetCar(int carId)
         {
             Car? car = carRepository.GetById(carId);
             if (car != null)
             {
-                return car;
+                CarWithCompanyDto carBasic =mapper.Map<CarWithCompanyDto>(car);
+                return carBasic;
             }
-            throw new Exception("Failed to Find customer");
+            throw new Exception("Failed to Find car");
         }
 
         [HttpPut("EditCar")]
@@ -47,8 +62,20 @@ namespace Car_Sharing.ApiHelper.Controllers
                 }
 
             }
-            throw new Exception("Failed to Update Customer");
+            throw new Exception("Failed to Update car");
 
+        }
+
+        [HttpPost("AddCar")]
+        public IActionResult AddCar(CarDtoAdd carDtoAdd)
+        {
+            Car car = mapper.Map<Car>(carDtoAdd);
+            carRepository.AddEntity(car);
+            if (carRepository.SaveChanges())
+            {
+                return Ok();
+            }
+            throw new Exception("Failed Add Car");
         }
 
     }
