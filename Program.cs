@@ -34,7 +34,8 @@ else if (mode == 2)
     var app = builder.Build();
     if (app.Environment.IsDevelopment())
     {
-        //neotvara swagger , zistit preco 
+        //swagger
+        //https://localhost:5001/swagger/index.html
         app.UseSwagger();
         app.UseSwaggerUI();
 
