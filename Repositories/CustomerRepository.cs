@@ -1,5 +1,4 @@
-﻿using Car_Sharing.Dtos;
-using Car_Sharing.Models;
+﻿using Car_Sharing.Models;
 using Car_Sharing.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics.CodeAnalysis;

@@ -1,14 +1,7 @@
 ﻿using Car_Sharing.Data;
 using Car_Sharing.Repositories.Interface;
 using Car_Sharing.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Car_Sharing.Models;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
-using System.Runtime.ConstrainedExecution;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Car_Sharing

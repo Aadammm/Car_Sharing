@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Car_Sharing.Data;
 using Car_Sharing.Models;
 using Car_Sharing.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;

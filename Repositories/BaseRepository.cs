@@ -1,8 +1,4 @@
 ﻿using Car_Sharing.Data;
-using Car_Sharing.Repositories.Interface;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
-
 namespace Car_Sharing.Repositories
 {
     internal class BaseRepository<T> where T : class
