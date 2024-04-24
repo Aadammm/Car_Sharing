@@ -22,6 +22,5 @@ namespace Car_Sharing.Repositories.Interface
         public Car GetByName(string name);
         public List<Car>? GetCompanyCars(Company company);
         public void LoadSingleReference(Car car);
-        //public Car? GetCarWithCompany(Car car);
     }
 }

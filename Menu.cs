@@ -85,7 +85,7 @@ namespace Car_Sharing
             Console.WriteLine(emptyListMessageFormat, nameof(Customer));
             return null;
         }
-        private void RentCar(Customer customer)//uvidime ci bude fungovat update takymto sposobom
+        private void RentCar(Customer customer)
         {
             if (customer.Rented_Car_Id == null)
             {
