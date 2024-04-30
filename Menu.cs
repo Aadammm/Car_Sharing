@@ -72,7 +72,7 @@ namespace Car_Sharing
                 if (index == 0)
                     return null;
 
-                customerRepository.LoadSingleReference(customers[index - 1]);
+                //customerRepository.LoadSingleReference(customers[index - 1]);
                 return customers[index - 1];
             }
             Console.WriteLine(emptyListMessageFormat, nameof(Customer));
@@ -84,10 +84,13 @@ namespace Car_Sharing
             {
 
                 Car? car = CarsList(CompanyList(), true);
-                if (car != null)
+                bool carIsAlreadyRented = customerRepository.GetAll().Where(c => c.Rented_Car_Id == car.Id).FirstOrDefault()==null;
+                if (car != null&& carIsAlreadyRented)
                 {
                     customer.Car = car;
-                    customerRepository.LoadSingleReference(customer);
+                    car.CarCustomer = customer;
+                    
+                    //customerRepository.LoadSingleReference(customer);
                     if (customerRepository.SaveChanges())
                     {
                         Console.WriteLine("You rented {0}\n", car.Name);
@@ -96,6 +99,10 @@ namespace Car_Sharing
                     {
                         Console.WriteLine("Failed rent a car\n");
                     }
+                }
+                else
+                {
+                    Console.WriteLine("This car is already Rented");
                 }
             }
             else
@@ -109,7 +116,7 @@ namespace Car_Sharing
             if (customer.Rented_Car_Id != null)
             {
                 Car? car = customer.Car;
-                carRepository.LoadSingleReference(car);
+                //carRepository.LoadSingleReference(car);
                 Console.WriteLine("Your rented car:\n{0}\nCompany:\n{1}\n", car.Name, car.CarCompany.Name);
             }
             else
@@ -259,6 +266,8 @@ namespace Car_Sharing
         [return: MaybeNull]
         private Car CarsList(Company company, bool choice)
         {
+            if (company == null)
+                return null;
             var cars = carRepository.GetCompanyCars(company);
 
             int listCount = cars.Count == null ? 0 : cars.Count ;

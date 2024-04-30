@@ -19,8 +19,8 @@ namespace Car_Sharing.Repositories
         }
         public void LoadSingleReference(Customer customer)
         {
-            _ef.Entry(customer).Reference(c=>c.Car).Load();
-          
+       
+                _ef.Entry(customer).Reference(c => c.Car).Load();
         }
         public override Customer? GetById(int id)
         {
