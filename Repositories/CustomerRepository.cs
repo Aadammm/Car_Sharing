@@ -17,11 +17,10 @@ namespace Car_Sharing.Repositories
             }
             return null;
         }
-        public void LoadSingleReference(Customer customer)
-        {
-       
-                _ef.Entry(customer).Reference(c => c.Car).Load();
-        }
+        //public void LoadSingleReference(Customer customer)
+        //{
+        //        _ef.Entry(customer).Reference(c => c.Car).Load();
+        //}
         public override Customer? GetById(int id)
         {
            return _ef.Customers.Include(c => c.Car).ThenInclude(c => c.CarCompany).SingleOrDefault(c=>c.Id==id);

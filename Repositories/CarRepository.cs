@@ -22,10 +22,10 @@ namespace Car_Sharing.Repositories
         {
             return _ef.Cars.Include(car => car.CarCompany).Where(c => c.Company_Id == company.Id).ToList();
         }
-        public void LoadSingleReference(Car car )
-        {
-            _ef.Entry(car).Reference(c=>c.CarCompany).Load();
-        }
+        //public void LoadSingleReference(Car car )
+        //{
+        //    _ef.Entry(car).Reference(c=>c.CarCompany).Load();
+        //}
 
         public override Car? GetById(int id)
         {

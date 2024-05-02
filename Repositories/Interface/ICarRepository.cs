@@ -15,6 +15,6 @@ namespace Car_Sharing.Repositories.Interface
         public void RemoveEntity(Car entity);
         public Car GetByName(string name);
         public List<Car>? GetCompanyCars(Company company);
-        public void LoadSingleReference(Car car);
+        //public void LoadSingleReference(Car car);
     }
 }

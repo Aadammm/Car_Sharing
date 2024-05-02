@@ -4,7 +4,9 @@ using Car_Sharing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-
+int? a = null;
+int b = 1;
+Console.WriteLine(a+b);
 Console.WriteLine("Select application mode:");
 Console.WriteLine("1: Console Application");
 Console.WriteLine("2: API (Swagger / Postman)");
