@@ -14,7 +14,7 @@ namespace Car_Sharing.ApiHelper.Controllers
     public class CarController : ControllerBase
     {
         readonly ICarRepository carRepository;
-        IMapper mapper;
+        readonly IMapper mapper;
         public CarController(IConfiguration config)
         {
             carRepository = new CarRepository();
@@ -75,6 +75,7 @@ namespace Car_Sharing.ApiHelper.Controllers
             {
                 return Ok();
             }
+
             throw new Exception("Failed Add Car");
         }
 
