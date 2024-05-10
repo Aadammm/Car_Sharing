@@ -21,6 +21,9 @@ if (mode == 1)
 }
 else if (mode == 2)
 {
+   Console.ForegroundColor = ConsoleColor.Green;
+    Console.WriteLine("https://localhost:5001/swagger/index.html");
+    Console.ResetColor();
 
     var builder = WebApplication.CreateBuilder(args);
 

@@ -28,6 +28,7 @@ namespace Car_Sharing.ApiHelper.Controllers
 
             }));
         }
+
         [HttpGet("GetCars")]
         public IEnumerable<CarBasicDto> GetCars()
         {
@@ -45,7 +46,7 @@ namespace Car_Sharing.ApiHelper.Controllers
                 CarWithCompanyDto carBasic =mapper.Map<CarWithCompanyDto>(car);
                 return carBasic;
             }
-            throw new Exception("Failed to Find car");
+            return NotFound("Car Not Found");
         }
 
         [HttpPut("EditCar")]

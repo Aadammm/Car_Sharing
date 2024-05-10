@@ -37,15 +37,15 @@ namespace Car_Sharing.ApiHelper.Controllers
             return companiesBasicDto;
         }
         [HttpGet("GetCompanyById/{companyId}")]
-        public CompanyWithCarsDto GetCompany(int companyId)
+        public IActionResult GetCompany(int companyId)
         {
             Company? company = companyRepository.GetById(companyId);
             if (company != null)
             {
                 var companyWithCarsDto = mapper.Map<CompanyWithCarsDto>(company);   
-                return companyWithCarsDto;
+                return Ok(companyWithCarsDto);
             }
-            throw new Exception("Failed to Find Company");
+            return NotFound("Company Not Found");
         }
 
         [HttpPut("EditCompany")]

@@ -16,14 +16,17 @@ namespace Car_Sharing.ApiHelper.Controllers
     {
         readonly ICustomerRepository customerRepository;
         IMapper mapper;
+
+        public object HttpStatus { get; private set; }
+
         public CustomerController(IConfiguration config)
         {
             customerRepository = new CustomerRepository();
             mapper = new Mapper(new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<Company,CompanyBasicDto>();
-                cfg.CreateMap<CustomerAddDto,Customer>();
-                cfg.CreateMap<Customer,CustomerDto>()
+                cfg.CreateMap<Company, CompanyBasicDto>();
+                cfg.CreateMap<CustomerAddDto, Customer>();
+                cfg.CreateMap<Customer, CustomerDto>()
                 .ForMember(dest => dest.CarWithCompanyDto, opt => opt.MapFrom(src => src.Car));
                 cfg.CreateMap<Car, CarWithCompanyDto>()
                 .ForMember(dest => dest.Company, opt => opt.MapFrom(src => src.CarCompany));
@@ -33,22 +36,24 @@ namespace Car_Sharing.ApiHelper.Controllers
         [HttpGet("GetCustomers")]
         public IEnumerable<CustomerDto> GetCustomers()
         {
-            var customers= customerRepository.GetAll();
-           
-           return  mapper.Map<IEnumerable<CustomerDto>>(customers);
+            var customers = customerRepository.GetAll();
+
+            return mapper.Map<IEnumerable<CustomerDto>>(customers);
         }
-             
+
         [HttpGet("GetCustomerById/{CustomerId}")]
-        public CustomerDto GetCustomer(int CustomerId)
+        //public CustomerDto GetCustomer(int CustomerId)
+        public ActionResult<CustomerDto> GetCustomer(int CustomerId)
         {
             var customer = customerRepository.GetById(CustomerId);
             if (customer != null)
             {
                 CustomerDto customerDto = mapper.Map<CustomerDto>(customer);
-                
+
                 return customerDto;
             }
-            throw new Exception("Failed to Find customer");//404 returnut
+            return NotFound("Custumer Not Found");
+
         }
 
         [HttpPut("EditCustomer")]
