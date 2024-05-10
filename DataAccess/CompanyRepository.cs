@@ -1,14 +1,18 @@
 ﻿
 using System.Diagnostics.CodeAnalysis;
 using Car_Sharing.Models;
-using Car_Sharing.Repositories;
-using Car_Sharing.Repositories.Interface;
+using Car_Sharing.DataAccess;
+using Car_Sharing.DataAccess.Interface;
 using Microsoft.EntityFrameworkCore;
 
 namespace Car_Sharing.Data
 {
-    internal class CompanyRepository :BaseRepository<Company>, ICompanyRepository
+    public class CompanyRepository :BaseRepository<Company>, ICompanyRepository
     {
+        public CompanyRepository()
+        {
+        }
+
         [return: MaybeNull]
         public Company GetByName(string name)
         {

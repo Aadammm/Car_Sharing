@@ -1,6 +1,6 @@
 ﻿using Car_Sharing.Data;
-using Car_Sharing.Repositories.Interface;
-using Car_Sharing.Repositories;
+using Car_Sharing.DataAccess.Interface;
+using Car_Sharing.DataAccess;
 using Car_Sharing.Models;
 using System.Diagnostics.CodeAnalysis;
 using Car_Sharing.Services;
@@ -15,9 +15,9 @@ namespace Car_Sharing.Presentation
 
         public Menu()
         {
-            carService = new CarService();
-            companyService = new CompanyService();
-            customerService = new CustomerService();
+            carService = new CarService(new CarRepository());
+            companyService = new CompanyService(new CompanyRepository());
+            customerService = new CustomerService(new CustomerRepository());
 
         }
 
@@ -33,7 +33,7 @@ namespace Car_Sharing.Presentation
                     CustomerMenu(LogAsCustomer());
                     break;
                 case 3:
-                    CreateCustomer();
+                    CreateAndSaveCustomer();
                     StartMenu();
                     break;
                 case 0:
@@ -43,7 +43,7 @@ namespace Car_Sharing.Presentation
 
         private void LogAsManager()
         {
-            Console.WriteLine("1. Company list\n2. Create a company\nResource.back");
+            Console.WriteLine("1. Company list\n2. Create a company\n"+Resource.back);
             switch (Choise(3))
             {
                 case 1:
@@ -66,7 +66,7 @@ namespace Car_Sharing.Presentation
             if (company != null)
             {
                 Console.WriteLine("{0} Company", company.Name);
-                Console.WriteLine("1. Car list\n2. Create a car\nResource.back");
+                Console.WriteLine("1. Car list\n2. Create a car\n"+Resource.back);
                 switch (Choise(3))
                 {
                     case 1:
@@ -95,7 +95,7 @@ namespace Car_Sharing.Presentation
         {
             if (customer != null)
             {
-                Console.WriteLine("1. Rent a car\n2. Return a rented car\n3. My rented car\nResource.back");
+                Console.WriteLine("1. Rent a car\n2. Return a rented car\n3. My rented car\n"+Resource.back);
                 switch (Choise(3))
                 {
                     case 1:
@@ -149,14 +149,11 @@ namespace Car_Sharing.Presentation
             if (customer.Rented_Car_Id == null)
             {
                 Car? car = CarsList(CompanyList(), true);
-                if (car != null )
+                if (car != null)
                 {
-                bool carIsAlreadyRented = customerService.GetCustomers().Where(c => c.Rented_Car_Id == car.Id).FirstOrDefault()!=null;
-                    if (!carIsAlreadyRented)
-                    customer.Car = car;
-                    car.CarCustomer = customer;
+                    bool carIsAlreadyRented = customerService.GetCustomers().Where(c => c.Rented_Car_Id == car.Id).FirstOrDefault() != null;
 
-                    if (customerService.SaveChange())
+                    if (!carIsAlreadyRented && customerService.RentCar(customer, car))
                     {
                         Console.WriteLine("You rented {0}\n", car.Name);
                     }
@@ -174,16 +171,17 @@ namespace Car_Sharing.Presentation
             {
                 Console.WriteLine("You've already rented a car!\n");
             }
-
         }
 
         private void RentedCar(Customer customer)
         {
-            if (customer.Rented_Car_Id != null)
+            Car? car = customerService.AlreadyRentedCar(customer);
+
+            if (car != null)
             {
-                Car? car = customer.Car;
                 Console.WriteLine("Your rented car:\n{0}\nCompany:\n{1}\n", car.Name, car.CarCompany.Name);
             }
+
             else
             {
                 Console.WriteLine("You didn't rent a car!\n");
@@ -194,8 +192,8 @@ namespace Car_Sharing.Presentation
         {
             if (customer.Car != null)
             {
-                customer.Rented_Car_Id = null;
-                if (customerService.SaveChange())
+
+                if (customerService.ReturnCar(customer))
                 {
                     Console.WriteLine("You've returned a rented car!\n");
                 }
@@ -211,14 +209,14 @@ namespace Car_Sharing.Presentation
             }
         }
 
-        private void CreateCustomer()
+        private void CreateAndSaveCustomer()
         {
             Console.Write(Resource.promptForEntityNameFormat, nameof(Customer));
             string? nameOfCustomer = Console.ReadLine();
             if (!string.IsNullOrEmpty(nameOfCustomer))
             {
 
-                if (customerService.CreateCustomer(nameOfCustomer))
+                if (customerService.CreateAndSaveCustomer(nameOfCustomer))
                 {
                     Console.WriteLine(Resource.entityCreatedMessageFormat, nameof(Customer));
                 }
@@ -271,7 +269,7 @@ namespace Car_Sharing.Presentation
             if (!string.IsNullOrEmpty(name))
             {
 
-                if (carService.CreateCar(companyId, name))
+                if (carService.CreateAndSaveCar(companyId, name))
                 {
                     Console.WriteLine(Resource.entityCreatedMessageFormat, nameof(Car));
                 }
@@ -291,7 +289,7 @@ namespace Car_Sharing.Presentation
             if (!string.IsNullOrEmpty(nameOfCompany))
             {
 
-                if (companyService.CreateCompany(nameOfCompany))
+                if (companyService.CreateAndSaveCompany(nameOfCompany))
                 {
                     Console.WriteLine(Resource.entityCreatedMessageFormat, nameof(Company));
                 }

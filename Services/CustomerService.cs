@@ -1,12 +1,13 @@
 ﻿using Car_Sharing.Data;
 using Car_Sharing.Models;
-using Car_Sharing.Repositories;
-using Car_Sharing.Repositories.Interface;
+using Car_Sharing.DataAccess;
+using Car_Sharing.DataAccess.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.ConstrainedExecution;
 
 namespace Car_Sharing.Services
 {
@@ -14,20 +15,24 @@ namespace Car_Sharing.Services
     {
         readonly ICustomerRepository customerRepository;
 
-        public CustomerService()
+        public CustomerService(ICustomerRepository cRepository)
         {
-            customerRepository = new CustomerRepository();
+            customerRepository = cRepository;
         }
-
-        public bool CreateCustomer(string name)
+        public Customer GetByName(string name)
         {
-            if (customerRepository.GetByName(name) == null)
+            return customerRepository.GetByName(name);
+        }
+        public bool CreateAndSaveCustomer(string name)
+        {
+            Customer customer = GetByName(name);
+            if (customer== null)
             {
                 customerRepository.AddEntity(new Customer()
                 {
                     Name = name
                 });
-                return customerRepository.SaveChanges();
+                return SaveChange();
             }
             return false;
         }
@@ -36,6 +41,30 @@ namespace Car_Sharing.Services
         {
             return customerRepository.GetAll();
         }
+
+        public Car? AlreadyRentedCar(Customer customer)
+        {
+            if (customer.Rented_Car_Id != null)
+            {
+                Car? car = customer.Car;
+                return customer.Car;
+            }
+            return null;
+        }
+
+        public bool RentCar(Customer customer, Car car)
+        {
+            customer.Car = car;
+            car.CarCustomer = customer;
+            return SaveChange();
+        }
+
+        public bool ReturnCar(Customer customer)
+        {
+            customer.Rented_Car_Id = null;
+            return SaveChange();
+        }
+
         public bool SaveChange()
         {
             return customerRepository.SaveChanges();

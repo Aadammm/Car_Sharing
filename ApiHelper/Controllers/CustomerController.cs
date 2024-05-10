@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Car_Sharing.Dtos;
 using Car_Sharing.Models;
-using Car_Sharing.Repositories;
-using Car_Sharing.Repositories.Interface;
+using Car_Sharing.DataAccess;
+using Car_Sharing.DataAccess.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Graph.Models;
@@ -48,7 +48,7 @@ namespace Car_Sharing.ApiHelper.Controllers
                 
                 return customerDto;
             }
-            throw new Exception("Failed to Find customer");
+            throw new Exception("Failed to Find customer");//404 returnut
         }
 
         [HttpPut("EditCustomer")]

@@ -2,8 +2,8 @@
 using Car_Sharing.Data;
 using Car_Sharing.Dtos;
 using Car_Sharing.Models;
-using Car_Sharing.Repositories;
-using Car_Sharing.Repositories.Interface;
+using Car_Sharing.DataAccess;
+using Car_Sharing.DataAccess.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System.Diagnostics.CodeAnalysis;

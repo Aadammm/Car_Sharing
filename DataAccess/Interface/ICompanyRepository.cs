@@ -1,8 +1,8 @@
 ﻿using Car_Sharing.Models;
 
-namespace Car_Sharing.Repositories.Interface
+namespace Car_Sharing.DataAccess.Interface
 {
-    internal interface ICompanyRepository
+    public interface ICompanyRepository
     {
         public Company GetByName(string name);
 

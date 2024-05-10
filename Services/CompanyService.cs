@@ -1,11 +1,12 @@
 ﻿using Car_Sharing.Data;
 using Car_Sharing.Models;
-using Car_Sharing.Repositories.Interface;
+using Car_Sharing.DataAccess.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Car_Sharing.DataAccess;
 
 namespace Car_Sharing.Services
 {
@@ -13,23 +14,29 @@ namespace Car_Sharing.Services
     {
         readonly ICompanyRepository companyRepository;
 
-        public CompanyService()
+        public CompanyService(ICompanyRepository companyRepository)
         {
-            companyRepository = new CompanyRepository();
-         
+            this.companyRepository = companyRepository;
         }
-
-        public bool CreateCompany( string name)
+        public Company GetByName(string name)
         {
-            if (companyRepository.GetByName(name) == null)
+            return companyRepository.GetByName(name);
+        }
+        public bool CreateAndSaveCompany( string name)
+        {
+            if (GetByName(name) == null)
             {
                 companyRepository.AddEntity(new Company()
                 {
                     Name = name
                 });
-                return companyRepository.SaveChanges();
+                return SaveChanges();
             }
             return false;
+        }
+        public bool SaveChanges()
+        {
+            return companyRepository.SaveChanges();
         }
         public IEnumerable<Company> GetCompanies()
         {

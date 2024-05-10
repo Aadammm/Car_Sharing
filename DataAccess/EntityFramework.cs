@@ -6,7 +6,7 @@ using System;
 
 namespace Car_Sharing.Data
 {
-    internal class EntityFramework : DbContext
+    public class EntityFramework : DbContext
     {
 
         public DbSet<Company> Companies { get; set; }

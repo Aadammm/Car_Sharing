@@ -1,7 +1,7 @@
 ﻿using Car_Sharing.Data;
-namespace Car_Sharing.Repositories
+namespace Car_Sharing.DataAccess
 {
-    internal class BaseRepository<T> where T : class
+    public class BaseRepository<T> where T : class
     {
         public EntityFramework _ef;
 

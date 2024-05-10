@@ -1,11 +1,11 @@
 ﻿using Car_Sharing.Models;
-using Car_Sharing.Repositories.Interface;
+using Car_Sharing.DataAccess.Interface;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Car_Sharing.Repositories
+namespace Car_Sharing.DataAccess
 {
-    internal class CustomerRepository : BaseRepository<Customer>, ICustomerRepository
+    public class CustomerRepository : BaseRepository<Customer>, ICustomerRepository
     {
         public override Customer? GetById(int id)
         {

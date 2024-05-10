@@ -1,9 +1,9 @@
 ﻿
 using Car_Sharing.Models;
 
-namespace Car_Sharing.Repositories.Interface
+namespace Car_Sharing.DataAccess.Interface
 {
-    internal interface ICarRepository
+    public interface ICarRepository
     {
         public void AddEntity(Car entity);
 
