@@ -5,5 +5,5 @@
 
 **_Web API:_**                   RESTful API endpoints accessible via HTTP, testable through Swagger UI.
 
-**_Unit Tests_**                 Unit tests have been added to this repository to ensure the reliability and correctness of the code. You can find these tests in the `tests` directory.
+**_Unit Tests_**                 Unit tests have been added to this repository to ensure the reliability and correctness of the code. You can find these tests in the `UnitTests` directory.
 
