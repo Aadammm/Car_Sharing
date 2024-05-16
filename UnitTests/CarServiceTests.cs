@@ -19,6 +19,38 @@ namespace Car_Sharing_Tests
             service = new CarService(mockRepository.Object);
                                                           
         }
+        [TestCase(1)]
+        [TestCase(756)]
+        [TestCase(15)]
+        [TestCase(5)]
+        public void GetById_ShouldReturnCar_IfCarExistInDatabase(int id )
+        {
+            var car = new Car()
+            {
+                Id=5,
+                Name="car"
+            };
+    
+        mockRepository.Setup(a=>a.GetById(It.Is<int>(id=>id>0))).Returns(car);
+    
+        var result = service.GetById(id);
+    
+        Assert.That(result, Is.EqualTo(car));
+        }
+        
+        [TestCase(-1)]
+        [TestCase(-756)]
+        [TestCase(-15)]
+        [TestCase(-5)]
+        [TestCase(0)]
+        public void GetById_ShouldReturnNull_IfCarNotExistInDatabase(int id )
+        {
+            mockRepository.Setup(a => a.GetById(It.Is<int>(id => id < 0))).Returns((Car)null);
+        
+            var result = service.GetById(id);
+        
+            Assert.That(result, Is.Null);
+        }
 
         [TestCase("Skoda")]
         [TestCase("BMW M5")]
