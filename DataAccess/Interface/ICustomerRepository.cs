@@ -7,12 +7,12 @@ namespace Car_Sharing.DataAccess.Interface
     {
         public void AddEntity(Customer entity);
 
-        public IEnumerable<Customer> GetAll();
+        public IEnumerable<Customer>? GetAll();
 
         public bool SaveChanges();
 
-        public Customer GetById(int id);
+        public Customer? GetById(int id);
 
-        public Customer GetByName(string name);
+        public Customer? GetByName(string name);
     }
 }

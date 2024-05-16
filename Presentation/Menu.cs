@@ -4,6 +4,8 @@ using Car_Sharing.DataAccess;
 using Car_Sharing.Models;
 using System.Diagnostics.CodeAnalysis;
 using Car_Sharing.Services;
+using System.Reflection;
+using System.Linq;
 
 namespace Car_Sharing.Presentation
 {
@@ -43,11 +45,11 @@ namespace Car_Sharing.Presentation
 
         private void LogAsManager()
         {
-            Console.WriteLine("1. Company list\n2. Create a company\n"+Resource.back);
+            Console.WriteLine("1. Company list\n2. Create a company\n" + Resource.back);
             switch (Choise(3))
             {
                 case 1:
-                    CompanyMenu(CompanyList());
+                    CompanyMenu(ChooseCompany());
                     break;
                 case 2:
                     CreateCompany();
@@ -56,21 +58,19 @@ namespace Car_Sharing.Presentation
                 case 0:
                     StartMenu();
                     break;
-                default:
-                    break;
             }
         }
 
-        private void CompanyMenu(Company company)
+        private void CompanyMenu(Company? company)
         {
             if (company != null)
             {
                 Console.WriteLine("{0} Company", company.Name);
-                Console.WriteLine("1. Car list\n2. Create a car\n"+Resource.back);
+                Console.WriteLine("1. Car list\n2. Create a car\n" + Resource.back);
                 switch (Choise(3))
                 {
                     case 1:
-                        CarsList(company, false);
+                        ChooseCar(company, false);
                         CompanyMenu(company);
                         break;
                     case 2:
@@ -95,7 +95,7 @@ namespace Car_Sharing.Presentation
         {
             if (customer != null)
             {
-                Console.WriteLine("1. Rent a car\n2. Return a rented car\n3. My rented car\n"+Resource.back);
+                Console.WriteLine("1. Rent a car\n2. Return a rented car\n3. My rented car\n" + Resource.back);
                 switch (Choise(3))
                 {
                     case 1:
@@ -120,9 +120,7 @@ namespace Car_Sharing.Presentation
                 StartMenu();
             }
         }
-
-        [return: MaybeNull]
-        private Customer LogAsCustomer()
+        private Customer? LogAsCustomer()
         {
             var customers = customerService.GetCustomers().ToList();
             int listCount = customers.Count;
@@ -148,10 +146,10 @@ namespace Car_Sharing.Presentation
         {
             if (customer.Rented_Car_Id == null)
             {
-                Car? car = CarsList(CompanyList(), true);
+                Car? car = ChooseCar(ChooseCompany(), true);
                 if (car != null)
                 {
-                    bool carIsAlreadyRented = customerService.GetCustomers().Where(c => c.Rented_Car_Id == car.Id).FirstOrDefault() != null;
+                    bool carIsAlreadyRented = customerService.GetCustomers().FirstOrDefault(c => c.Rented_Car_Id == car.Id) != null;
 
                     if (!carIsAlreadyRented && customerService.RentCar(customer, car))
                     {
@@ -179,7 +177,7 @@ namespace Car_Sharing.Presentation
 
             if (car != null)
             {
-                Console.WriteLine("Your rented car:\n{0}\nCompany:\n{1}\n", car.Name, car.CarCompany.Name);
+                Console.WriteLine("Your rented car:\n{0}\nCompany:\n{1}\n", car.Name, car.CompanyCar.Name);
             }
 
             else
@@ -229,16 +227,14 @@ namespace Car_Sharing.Presentation
                 Console.WriteLine(Resource.entityNameRequiredMessageFormat, nameof(Customer));
         }
 
-        [return: MaybeNull]
-        private Car CarsList(Company company, bool choice)
+        private Car? ChooseCar(Company? company, bool choice)
         {
             if (company == null)
                 return null;
 
             var cars = carService.AllCarsWithCompany(company).ToList();
 
-            int listCount = cars.Count;
-            if (listCount > 0)
+            if (cars.Count > 0)
             {
                 Console.WriteLine("Car list:");
                 Display(cars);
@@ -246,7 +242,7 @@ namespace Car_Sharing.Presentation
                 if (choice)
                 {
                     Console.WriteLine(Resource.back);
-                    int index = Choise(listCount);
+                    int index = Choise(cars.Count);
 
                     if (index > 0)
                     {
@@ -302,8 +298,7 @@ namespace Car_Sharing.Presentation
                 Console.WriteLine(Resource.entityNameRequiredMessageFormat, nameof(Company));
         }
 
-        [return: MaybeNull]
-        private Company CompanyList()//return null 
+        private Company? ChooseCompany()
         {
             var companies = companyService.GetCompanies().ToList();
             int listCount = companies.Count;

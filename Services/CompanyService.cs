@@ -18,7 +18,7 @@ namespace Car_Sharing.Services
         {
             this.companyRepository = companyRepository;
         }
-        public Company GetByName(string name)
+        public Company? GetByName(string name)
         {
             return companyRepository.GetByName(name);
         }

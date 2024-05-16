@@ -7,7 +7,7 @@ namespace Car_Sharing.Dtos
         public int Id { get; set; } 
         public string? Name { get; set; }
         public int? Rented_Car_Id { get; set; }
-        public CarWithCompanyDto? CarWithCompanyDto { get; set; }
+        public CarWithCompanyReferenceDto? CarWithCompanyDto { get; set; }
 
     }
 }

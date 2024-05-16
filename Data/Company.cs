@@ -12,9 +12,5 @@ namespace Car_Sharing.Models
         public string? Name { get; set; }
         public List<Car>? ListOfCompanyCars { get; set; } = new List<Car>();
 
-        public Company()
-        {
-            
-        }
     }
 }

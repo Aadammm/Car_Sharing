@@ -46,8 +46,7 @@ namespace Car_Sharing.Services
         {
             if (customer.Rented_Car_Id != null)
             {
-                Car? car = customer.Car;
-                return customer.Car;
+                return   customer.Car;
             }
             return null;
         }
@@ -55,7 +54,7 @@ namespace Car_Sharing.Services
         public bool RentCar(Customer customer, Car car)
         {
             customer.Car = car;
-            car.CarCustomer = customer;
+            car.CustomerCar = customer;
             return SaveChange();
         }
 

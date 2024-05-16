@@ -13,7 +13,7 @@ namespace Car_Sharing.DataAccess.Interface
 
         public Car? GetById(int id);
 
-        public Car GetByName(string name);
+        public Car? GetByName(string name);
 
         public List<Car>? GetAllCarsWithCompany(Company company);
     }

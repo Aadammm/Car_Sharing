@@ -40,17 +40,17 @@ namespace Car_Sharing.Data
             modelBuilder.Entity<Customer>().ToTable("Customer").HasKey("Id");
             modelBuilder.Entity<Company>()
                  .HasMany(c => c.ListOfCompanyCars)
-                 .WithOne(c => c.CarCompany)
+                 .WithOne(c => c.CompanyCar)
                  .HasForeignKey(car => car.Company_Id);
 
             modelBuilder.Entity<Car>()
-                .HasOne(c => c.CarCompany)
+                .HasOne(c => c.CompanyCar)
                 .WithMany(c => c.ListOfCompanyCars)
                 .HasForeignKey(c => c.Company_Id);
 
             modelBuilder.Entity<Customer>()
                 .HasOne(c => c.Car)
-                .WithOne(c => c.CarCustomer)
+                .WithOne(c => c.CustomerCar)
                 .HasForeignKey<Customer>(c => c.Rented_Car_Id);
         }
 

@@ -7,39 +7,35 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Car_Sharing.Data
 {
-    public class CompanyRepository :BaseRepository<Company>, ICompanyRepository
+    public class CompanyRepository : BaseRepository<Company>, ICompanyRepository
     {
         public CompanyRepository()
         {
         }
 
-        [return: MaybeNull]
-        public Company GetByName(string name)
+        public Company? GetByName(string name)
         {
-            Company? company = _ef.Companies.Where(a => a.Name == name).SingleOrDefault();
-            if (company != null)
-            {
-                return company;
-            }
-            return null;
+            return _ef.Companies.Where(company => company.Name == name).SingleOrDefault();
         }
 
 
-        public Company? GetCompanyWithCompanysCar(Company company)
+        public Company? GetCompanyWithCarReference(Company company)
         {
-            return _ef.Companies.Include(c => c.ListOfCompanyCars).Where(c => c.Id == company.Id).FirstOrDefault();
+            return _ef.Companies.Include(company => company.ListOfCompanyCars)
+                   .Where(car => car.Id == company.Id).FirstOrDefault();
         }
 
 
-        public void LoadAllCompanyReference(Company company)
+        public void LoadingCompanyReferences(Company company)
         {
-            _ef.Entry(company).Collection(c => c.ListOfCompanyCars).Load();
+            _ef.Entry(company).Collection(company => company.ListOfCompanyCars).Load();
         }
 
 
         public override Company? GetById(int id)
         {
-            return _ef.Companies.Include(c => c.ListOfCompanyCars).SingleOrDefault(c => c.Id == id);
+            return _ef.Companies.Include(company => company.ListOfCompanyCars)
+                   .SingleOrDefault(company => company.Id == id);
         }
     }
 }

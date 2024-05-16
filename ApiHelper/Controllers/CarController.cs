@@ -23,8 +23,8 @@ namespace Car_Sharing.ApiHelper.Controllers
                 cfg.CreateMap<CarDtoAdd, Car>(); 
                 cfg.CreateMap<Car, CarBasicDto>();
                 cfg.CreateMap<Company, CompanyBasicDto>();
-                cfg.CreateMap<Car,CarWithCompanyDto>()
-                .ForMember(dest=>dest.Company,opt=>opt.MapFrom(src=>src.CarCompany));
+                cfg.CreateMap<Car,CarWithCompanyReferenceDto>()
+                .ForMember(dest=>dest.Company,opt=>opt.MapFrom(src=>src.CompanyCar));
 
             }));
         }
@@ -38,12 +38,12 @@ namespace Car_Sharing.ApiHelper.Controllers
             return basicCars;
         }
         [HttpGet("GetCarById/{carId}")]
-        public ActionResult<CarWithCompanyDto> GetCar(int carId)
+        public ActionResult<CarWithCompanyReferenceDto> GetCar(int carId)
         {
             Car? car = carRepository.GetById(carId);
             if (car != null)
             {
-                CarWithCompanyDto carBasic =mapper.Map<CarWithCompanyDto>(car);
+                CarWithCompanyReferenceDto carBasic =mapper.Map<CarWithCompanyReferenceDto>(car);
                 return carBasic;
             }
             return NotFound("Car Not Found");

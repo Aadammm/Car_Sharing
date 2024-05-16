@@ -5,8 +5,6 @@ using Car_Sharing.DataAccess;
 using Car_Sharing.DataAccess.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Graph.Models;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Car_Sharing.ApiHelper.Controllers
 {
@@ -15,7 +13,7 @@ namespace Car_Sharing.ApiHelper.Controllers
     public class CustomerController : ControllerBase
     {
         readonly ICustomerRepository customerRepository;
-        IMapper mapper;
+        readonly IMapper mapper;
 
         public object HttpStatus { get; private set; }
 
@@ -28,8 +26,8 @@ namespace Car_Sharing.ApiHelper.Controllers
                 cfg.CreateMap<CustomerAddDto, Customer>();
                 cfg.CreateMap<Customer, CustomerDto>()
                 .ForMember(dest => dest.CarWithCompanyDto, opt => opt.MapFrom(src => src.Car));
-                cfg.CreateMap<Car, CarWithCompanyDto>()
-                .ForMember(dest => dest.Company, opt => opt.MapFrom(src => src.CarCompany));
+                cfg.CreateMap<Car, CarWithCompanyReferenceDto>()
+                .ForMember(dest => dest.Company, opt => opt.MapFrom(src => src.CompanyCar));
 
             }));
         }
@@ -42,7 +40,6 @@ namespace Car_Sharing.ApiHelper.Controllers
         }
 
         [HttpGet("GetCustomerById/{CustomerId}")]
-        //public CustomerDto GetCustomer(int CustomerId)
         public ActionResult<CustomerDto> GetCustomer(int CustomerId)
         {
             var customer = customerRepository.GetById(CustomerId);

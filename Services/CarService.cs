@@ -37,11 +37,11 @@ namespace Car_Sharing.Services
             return carRepository.SaveChanges();
         }
 
-        public Car GetByName(string name)
+        public Car? GetByName(string name)
         {
             return carRepository.GetByName(name);
         }
-        public Car GetById(int id)
+        public Car? GetById(int id)
         {
             return carRepository.GetById(id);
         }

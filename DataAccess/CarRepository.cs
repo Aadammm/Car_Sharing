@@ -6,29 +6,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Car_Sharing.DataAccess
 {
-    public class CarRepository:BaseRepository<Car>, ICarRepository
+    public class CarRepository : BaseRepository<Car>, ICarRepository
     {
         public override Car? GetById(int id)
         {
-            return _ef.Cars.Include(c => c.CarCompany).SingleOrDefault(c => c.Id == id);
+            return _ef.Cars.Include(c => c.CompanyCar).SingleOrDefault(c => c.Id == id);
         }
 
-
-        [return: MaybeNull]
-        public Car GetByName(string name)
+        public Car? GetByName(string name)
         {
-          Car? car=  _ef.Cars.Where(a => a.Name == name).SingleOrDefault();
-            if(car!=null)
-            {
-                return car;
-            }
-            return null;
+           return _ef.Cars.Where(a => a.Name == name).SingleOrDefault();
         }
-
 
         public List<Car>? GetAllCarsWithCompany(Company company)
         {
-            return _ef.Cars.Include(car => car.CarCompany).Where(c => c.Company_Id == company.Id).ToList();
+            return _ef.Cars.Include(car => car.CompanyCar).Where(c => c.Company_Id == company.Id).ToList();
         }
     }
 }

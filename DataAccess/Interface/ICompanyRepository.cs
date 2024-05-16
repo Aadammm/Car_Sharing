@@ -4,7 +4,7 @@ namespace Car_Sharing.DataAccess.Interface
 {
     public interface ICompanyRepository
     {
-        public Company GetByName(string name);
+        public Company? GetByName(string name);
 
         public void AddEntity(Company entity);
 

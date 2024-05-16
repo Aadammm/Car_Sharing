@@ -36,8 +36,6 @@ else if (mode == 2)
     var app = builder.Build();
     if (app.Environment.IsDevelopment())
     {
-        //swagger
-        //https://localhost:5001/swagger/index.html
         app.UseSwagger();
         app.UseSwaggerUI();
 

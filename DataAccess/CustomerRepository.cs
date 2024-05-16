@@ -9,26 +9,17 @@ namespace Car_Sharing.DataAccess
     {
         public override Customer? GetById(int id)
         {
-           return _ef.Customers.Include(c => c.Car).ThenInclude(c => c.CarCompany).SingleOrDefault(c=>c.Id==id);
-            
+           return _ef.Customers.Include(customer => customer.Car).ThenInclude(car => car.CompanyCar).SingleOrDefault(c=>c.Id==id);
         }
 
-
-        [return: MaybeNull]
-        public Customer GetByName(string name)
+        public Customer? GetByName(string name)
         {
-            Customer? customer = _ef.Customers.Where(a => a.Name == name).SingleOrDefault();
-            if (customer != null)
-            {
-                return customer;
-            }
-            return null;
+           return   _ef.Customers.Where(customer => customer.Name == name).SingleOrDefault();
         }
-
 
         public override IEnumerable<Customer> GetAll()
         {
-            return _ef.Customers.Include(c=>c.Car).ThenInclude(c=>c.CarCompany);
+            return _ef.Customers.Include(customer => customer.Car).ThenInclude(car => car.CompanyCar);
         }
 
     }
