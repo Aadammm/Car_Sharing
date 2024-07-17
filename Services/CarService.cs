@@ -9,13 +9,9 @@ using System.Threading.Tasks;
 
 namespace Car_Sharing.Services
 {
-    public class CarService
+    public class CarService(ICarRepository carRepository)
     {
-        readonly ICarRepository carRepository;
-        public CarService(ICarRepository carRepository)
-        {
-            this.carRepository = carRepository;
-        }
+        readonly ICarRepository carRepository = carRepository;
 
         public bool CreateAndSaveCar(int companyId, string name)
         {
@@ -46,7 +42,7 @@ namespace Car_Sharing.Services
             return carRepository.GetById(id);
         }
 
-        public IEnumerable<Car>? AllCarsWithCompany(Company company)
+        public IEnumerable<Car>? AllCarsWithCompany(Company? company)
         {
             return carRepository.GetAllCarsWithCompany(company);
         }

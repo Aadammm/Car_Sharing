@@ -7,6 +7,7 @@ using Car_Sharing.Services;
 using System.Reflection;
 using System.Linq;
 using Car_Sharing.Properties;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Car_Sharing.Presentation
 {
@@ -123,7 +124,7 @@ namespace Car_Sharing.Presentation
         }
         private Customer? LogAsCustomer()
         {
-            var customers = customerService.GetCustomers().ToList();
+            List<Customer> customers = customerService.GetCustomers().ToList();
             int listCount = customers.Count;
             if (listCount > 0)
             {
@@ -151,13 +152,13 @@ namespace Car_Sharing.Presentation
                 if (car is not null)
                 {
                     bool carIsAlreadyRented = customerService.GetCustomers().FirstOrDefault(c => c.Rented_Car_Id == car.Id) != null;
-                    if (carIsAlreadyRented)
-                    {
-                        Console.WriteLine("This car is already Rented");
-                    }
-                   else if (customerService.RentCar(customer, car))
+                    if (customerService.RentCar(customer, car))
                     {
                         Console.WriteLine("You rented {0}\n", car.Name);
+                    }
+                    else if (carIsAlreadyRented)
+                    {
+                        Console.WriteLine("This car is already Rented");
                     }
                     else
                     {
@@ -176,14 +177,14 @@ namespace Car_Sharing.Presentation
         {
             Car? car = customerService.AlreadyRentedCar(customer);
 
-            if (car != null)
-            {
-                Console.WriteLine("Your rented car:\n{0}\nCompany:\n{1}\n", car.Name, car.CompanyCar.Name);
-            }
-
-            else
+            if (car is null)
             {
                 Console.WriteLine("You didn't rent a car!\n");
+
+            }
+            else
+            {
+                Console.WriteLine("Your rented car:\n{0}\nCompany:\n{1}\n", car.Name, car.CompanyCar?.Name);
             }
         }
 
@@ -233,17 +234,17 @@ namespace Car_Sharing.Presentation
             if (company == null)
                 return null;
 
-            var cars = carService.AllCarsWithCompany(company).ToList();
-
-            if (cars.Count > 0)
+            var cars = carService.AllCarsWithCompany(company)?.ToList();
+            if (cars is not null)
             {
+                var carsCount = cars.Count;
                 Console.WriteLine("Car list:");
                 Display(cars);
 
                 if (choice)
                 {
                     Console.WriteLine(Resource.back);
-                    int index = Choise(cars.Count);
+                    int index = Choise(carsCount);
 
                     if (index > 0)
                     {
@@ -334,20 +335,28 @@ namespace Car_Sharing.Presentation
             return choise;
         }
 
-        private void Display<T>(List<T> entities)
+        private void Display<T>(List<T>? entities)
         {
-            for (int i = 0; i < entities.Count; i++)
+            if (entities is not null)
             {
-                var item = entities[i];
-                var propertyInfo = item.GetType().GetProperty("Name");
-                if (propertyInfo != null)
+
+                for (int i = 0; i < entities.Count; i++)
                 {
-                    string name = (string)propertyInfo.GetValue(item);
-                    Console.WriteLine($"{i + 1}. {name}");
-                }
-                else
-                {
-                    Console.WriteLine($"{i + 1}. [No name]");
+                    T? item = entities[i];
+                    if (item is not null)
+                    {
+                        PropertyInfo? propertyInfo = item.GetType().GetProperty("Name");
+
+                        if (propertyInfo is not null)
+                        {
+                            var name = propertyInfo.GetValue(item);
+                            Console.WriteLine($"{i + 1}. {name?.ToString()}");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine($"{i + 1}. [No name]");
+                    }
                 }
             }
         }

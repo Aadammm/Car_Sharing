@@ -11,22 +11,23 @@ using System.Runtime.ConstrainedExecution;
 
 namespace Car_Sharing.Services
 {
-    public class CustomerService
+    public class CustomerService(ICustomerRepository cRepository)
     {
-        readonly ICustomerRepository customerRepository;
+        readonly ICustomerRepository customerRepository = cRepository;
 
-        public CustomerService(ICustomerRepository cRepository)
+        public Customer? GetByName(string name)
         {
-            customerRepository = cRepository;
-        }
-        public Customer GetByName(string name)
-        {
-            return customerRepository.GetByName(name);
+            var customer =customerRepository.GetByName(name);
+            if (customer is not null)
+            {
+                return customer;
+            }
+            return null;
         }
         public bool CreateAndSaveCustomer(string name)
         {
-            Customer customer = GetByName(name);
-            if (customer== null)
+            Customer? customer = GetByName(name);
+            if (customer is null)
             {
                 customerRepository.AddEntity(new Customer()
                 {
@@ -39,23 +40,26 @@ namespace Car_Sharing.Services
 
         public IEnumerable<Customer> GetCustomers()
         {
-            return customerRepository.GetAll();
+            var customers = customerRepository.GetAll();
+            if (customers is not null)
+            {
+                return customers;
+            }
+            return Enumerable.Empty<Customer>();
         }
 
         public Car? AlreadyRentedCar(Customer customer)
         {
             if (customer.Rented_Car_Id != null)
             {
-                return   customer.Car;
+                return customer.Car;
             }
             return null;
         }
 
         public bool RentCar(Customer customer, Car car)
         {
-            
             customer.Car = car;
-            car.CustomerCar = customer;
             return SaveChange();
         }
 

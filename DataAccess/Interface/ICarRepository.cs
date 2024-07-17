@@ -15,6 +15,6 @@ namespace Car_Sharing.DataAccess.Interface
 
         public Car? GetByName(string name);
 
-        public List<Car>? GetAllCarsWithCompany(Company company);
+        public IEnumerable<Car>? GetAllCarsWithCompany(Company? company);
     }
 }

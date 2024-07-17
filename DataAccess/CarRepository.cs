@@ -15,12 +15,16 @@ namespace Car_Sharing.DataAccess
 
         public Car? GetByName(string name)
         {
-           return _ef.Cars.Where(a => a.Name == name).SingleOrDefault();
+            return _ef.Cars.Where(a => a.Name == name).SingleOrDefault();
         }
 
-        public List<Car>? GetAllCarsWithCompany(Company company)
+        public IEnumerable<Car>? GetAllCarsWithCompany(Company? company)
         {
-            return _ef.Cars.Include(car => car.CompanyCar).Where(c => c.Company_Id == company.Id).ToList();
+            if (company is not null)
+            {
+                return _ef.Cars.Include(car => car.CompanyCar).Where(c => c.Company_Id == company.Id).ToList();
+            }
+            return Enumerable.Empty<Car>().ToList();
         }
     }
 }
