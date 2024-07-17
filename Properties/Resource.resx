@@ -121,8 +121,7 @@
     <value>0. Back</value>
   </data>
   <data name="emptyListMessageFormat" xml:space="preserve">
-    <value>The {0} list is empty!\n</value>
-    <comment>sdfsdfsdfdsfsd</comment>
+    <value>The {0} list is empty!</value>
   </data>
   <data name="entityCreatedMessageFormat" xml:space="preserve">
     <value>The {0} was created!\n</value>

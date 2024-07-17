@@ -6,6 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 using Car_Sharing.Services;
 using System.Reflection;
 using System.Linq;
+using Car_Sharing.Properties;
 
 namespace Car_Sharing.Presentation
 {
@@ -144,14 +145,17 @@ namespace Car_Sharing.Presentation
 
         private void RentCar(Customer customer)
         {
-            if (customer.Rented_Car_Id == null)
+            if (customer.Rented_Car_Id is null)
             {
                 Car? car = ChooseCar(ChooseCompany(), true);
-                if (car != null)
+                if (car is not null)
                 {
                     bool carIsAlreadyRented = customerService.GetCustomers().FirstOrDefault(c => c.Rented_Car_Id == car.Id) != null;
-
-                    if (!carIsAlreadyRented && customerService.RentCar(customer, car))
+                    if (carIsAlreadyRented)
+                    {
+                        Console.WriteLine("This car is already Rented");
+                    }
+                   else if (customerService.RentCar(customer, car))
                     {
                         Console.WriteLine("You rented {0}\n", car.Name);
                     }
@@ -160,14 +164,11 @@ namespace Car_Sharing.Presentation
                         Console.WriteLine("Failed rent a car\n");
                     }
                 }
-                else
-                {
-                    Console.WriteLine("This car is already Rented");
-                }
+
             }
             else
             {
-                Console.WriteLine("You've already rented a car!\n");
+                Console.WriteLine("You've already rented a car!");
             }
         }
 

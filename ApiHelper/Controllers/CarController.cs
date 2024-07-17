@@ -15,7 +15,7 @@ namespace Car_Sharing.ApiHelper.Controllers
     {
         readonly ICarRepository carRepository;
         readonly IMapper mapper;
-        public CarController(IConfiguration config)
+        public CarController()
         {
             carRepository = new CarRepository();
             mapper = new Mapper(new MapperConfiguration(cfg =>
@@ -63,7 +63,7 @@ namespace Car_Sharing.ApiHelper.Controllers
                 }
 
             }
-            throw new Exception("Failed to Update car");
+            return StatusCode(500, "Failed to Update car");
 
         }
 
@@ -77,7 +77,7 @@ namespace Car_Sharing.ApiHelper.Controllers
                 return Ok();
             }
 
-            throw new Exception("Failed Add Car");
+            return StatusCode(500, "Failed Add Car");
         }
 
     }

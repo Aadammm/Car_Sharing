@@ -53,6 +53,7 @@ namespace Car_Sharing.Services
 
         public bool RentCar(Customer customer, Car car)
         {
+            
             customer.Car = car;
             car.CustomerCar = customer;
             return SaveChange();

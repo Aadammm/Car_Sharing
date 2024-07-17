@@ -14,10 +14,7 @@ namespace Car_Sharing.ApiHelper.Controllers
     {
         readonly ICustomerRepository customerRepository;
         readonly IMapper mapper;
-
-        public object HttpStatus { get; private set; }
-
-        public CustomerController(IConfiguration config)
+        public CustomerController()
         {
             customerRepository = new CustomerRepository();
             mapper = new Mapper(new MapperConfiguration(cfg =>
@@ -67,7 +64,7 @@ namespace Car_Sharing.ApiHelper.Controllers
                 }
 
             }
-            throw new Exception("Failed to Update Customer");
+            return StatusCode(500, "Failed to Update Customer");
         }
         [HttpPost("AddCustomer")]
         public IActionResult AddCustomer(CustomerAddDto customer)
@@ -78,7 +75,7 @@ namespace Car_Sharing.ApiHelper.Controllers
             {
                 return Ok();
             }
-            throw new Exception("Failed Add User");
+            return StatusCode(500, "Failed Add User");
         }
     }
 }

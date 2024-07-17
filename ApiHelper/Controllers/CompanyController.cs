@@ -15,9 +15,9 @@ namespace Car_Sharing.ApiHelper.Controllers
     public class CompanyController : ControllerBase
     {
         readonly ICompanyRepository companyRepository;
-        IMapper mapper;
+        readonly IMapper mapper;
 
-        public CompanyController(IConfiguration config)
+        public CompanyController()
         {
             companyRepository = new CompanyRepository();
             mapper = new Mapper(new MapperConfiguration(cfg =>
@@ -25,15 +25,15 @@ namespace Car_Sharing.ApiHelper.Controllers
                 cfg.CreateMap<CompanyAddDto, Company>();
                 cfg.CreateMap<Car, CarBasicDto>();
                 cfg.CreateMap<Company, CompanyWithCarsDto>()
-                .ForMember(dest=>dest.CompanyCars,opt=>opt.MapFrom(src=>src.ListOfCompanyCars));
-                cfg.CreateMap<Company,CompanyBasicDto >();
+                .ForMember(dest => dest.CompanyCars, opt => opt.MapFrom(src => src.ListOfCompanyCars));
+                cfg.CreateMap<Company, CompanyBasicDto>();
             }));
         }
         [HttpGet("GetCompanies")]
         public IEnumerable<CompanyBasicDto> GetCompanies()
         {
-             var companies=companyRepository.GetAll();
-            IEnumerable<CompanyBasicDto> companiesBasicDto =mapper.Map<IEnumerable<CompanyBasicDto>>(companies);
+            var companies = companyRepository.GetAll();
+            IEnumerable<CompanyBasicDto> companiesBasicDto = mapper.Map<IEnumerable<CompanyBasicDto>>(companies);
             return companiesBasicDto;
         }
         [HttpGet("GetCompanyById/{companyId}")]
@@ -42,7 +42,7 @@ namespace Car_Sharing.ApiHelper.Controllers
             Company? company = companyRepository.GetById(companyId);
             if (company != null)
             {
-                var companyWithCarsDto = mapper.Map<CompanyWithCarsDto>(company);   
+                var companyWithCarsDto = mapper.Map<CompanyWithCarsDto>(company);
                 return Ok(companyWithCarsDto);
             }
             return NotFound("Company Not Found");
@@ -61,7 +61,7 @@ namespace Car_Sharing.ApiHelper.Controllers
                 }
 
             }
-            throw new Exception("Failed to Update Company");
+            return StatusCode(500, "Failed to Update Company");
 
         }
         [HttpPost("AddCompany")]
@@ -73,7 +73,7 @@ namespace Car_Sharing.ApiHelper.Controllers
             {
                 return Ok();
             }
-            throw new Exception("Failed Add Company");
+            return StatusCode(500, "Failed Add Company");
         }
 
     }
