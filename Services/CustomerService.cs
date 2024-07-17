@@ -17,7 +17,7 @@ namespace Car_Sharing.Services
 
         public Customer? GetByName(string name)
         {
-            var customer =customerRepository.GetByName(name);
+            var customer = customerRepository.GetByName(name);
             if (customer is not null)
             {
                 return customer;
@@ -59,8 +59,12 @@ namespace Car_Sharing.Services
 
         public bool RentCar(Customer customer, Car car)
         {
-            customer.Car = car;
+            if (customer.Car is null)
+            {
+                customer.Car = car;
             return SaveChange();
+            }
+            return false;
         }
 
         public bool ReturnCar(Customer customer)
@@ -75,3 +79,21 @@ namespace Car_Sharing.Services
         }
     }
 }
+//Choose a Company
+//1. ASDASDAS
+//2. autobus
+//3. autvhhfghobus
+//4. dadko
+//5. companiyuyuyy
+//6. nova company
+//0. Back
+//>>4
+
+//Car list:
+//1.q
+//2.w
+//3.tretie auto
+//4. lambo
+//5. vladoboj
+//0. Back
+//>>2
