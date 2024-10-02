@@ -4,10 +4,6 @@ using Moq;
 using NUnit.Framework;
 using Car_Sharing.Models;
 using NUnit.Framework.Legacy;
-using Microsoft.IdentityModel.Tokens;
-using System.Formats.Asn1;
-using Castle.Core.Resource;
-
 namespace Car_Sharing_Tests
 {
     public class CustomerServiceTests

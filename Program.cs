@@ -16,7 +16,7 @@ while (!int.TryParse(Console.ReadLine(), out mode) || mode > 2 || mode < 0)
 
 if (mode == 1)
 {
-    Menu menu = new Menu();
+    Menu menu = new();
     menu.StartMenu();
 }
 else if (mode == 2)

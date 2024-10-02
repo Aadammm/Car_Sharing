@@ -1,15 +1,9 @@
-﻿using Car_Sharing.Data;
-using Car_Sharing.DataAccess.Interface;
+﻿using Car_Sharing.DataAccess.Interface;
 using Car_Sharing.Models;
 using Car_Sharing.Services;
 using Moq;
 using NUnit.Framework;
 using NUnit.Framework.Legacy;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Car_Sharing_Tests
 {

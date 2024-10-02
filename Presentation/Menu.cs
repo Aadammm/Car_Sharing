@@ -1,13 +1,9 @@
 ﻿using Car_Sharing.Data;
-using Car_Sharing.DataAccess.Interface;
 using Car_Sharing.DataAccess;
 using Car_Sharing.Models;
-using System.Diagnostics.CodeAnalysis;
 using Car_Sharing.Services;
 using System.Reflection;
-using System.Linq;
 using Car_Sharing.Properties;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Car_Sharing.Presentation
 {
