@@ -8,9 +8,13 @@ namespace Car_Sharing.DataAccess
 {
     public class CarRepository : BaseRepository<Car>, ICarRepository
     {
+        public override IEnumerable<Car> GetAll()
+        {
+            return _ef.Cars.Include(c => c.Company).Include(c => c.Customer);
+        }
         public override Car? GetById(int id)
         {
-            return _ef.Cars.Include(c => c.CompanyCar).SingleOrDefault(c => c.Id == id);
+            return _ef.Cars.Include(c=>c.Company).Include(c=>c.Customer).SingleOrDefault(c => c.Id == id);
         }
 
         public Car? GetByName(string name)
@@ -22,7 +26,7 @@ namespace Car_Sharing.DataAccess
         {
             if (company is not null)
             {
-                return _ef.Cars.Include(car => car.CompanyCar).Where(c => c.Company_Id == company.Id).ToList();
+                return _ef.Cars.Include(car => car.Company).Where(c => c.Company.Id == company.Id).ToList();
             }
             return Enumerable.Empty<Car>().ToList();
         }

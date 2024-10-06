@@ -5,6 +5,7 @@ using Car_Sharing.DataAccess;
 using Car_Sharing.DataAccess.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Car_Sharing.New_Dto;
 
 namespace Car_Sharing.ApiHelper.Controllers
 {
@@ -19,31 +20,35 @@ namespace Car_Sharing.ApiHelper.Controllers
             customerRepository = new CustomerRepository();
             mapper = new Mapper(new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<Company, CompanyBasicDto>();
+                cfg.CreateMap<Car, CarDto>();
                 cfg.CreateMap<CustomerAddDto, Customer>();
-                cfg.CreateMap<Customer, CustomerDto>()
-                .ForMember(dest => dest.CarWithCompanyDto, opt => opt.MapFrom(src => src.Car));
-                cfg.CreateMap<Car, CarWithCompanyReferenceDto>()
-                .ForMember(dest => dest.Company, opt => opt.MapFrom(src => src.CompanyCar));
-
+                cfg.CreateMap<Customer, CustomerDto>();
+                cfg.CreateMap<Customer, CustomerDtoWithCar>()
+                .ForMember(dest => dest.Car, opt => opt.MapFrom(src => src.Car));
             }));
         }
+
         [HttpGet("GetCustomers")]
         public IEnumerable<CustomerDto> GetCustomers()
         {
             var customers = customerRepository.GetAll();
+                       return mapper.Map<IEnumerable<CustomerDto>>(customers);
+        }
 
-            return mapper.Map<IEnumerable<CustomerDto>>(customers);
+        [HttpGet("GetCustomersWithCar")]
+        public IEnumerable<CustomerDtoWithCar> GetCustomersWithCar()
+        {
+            var customers = customerRepository.GetAll();
+            return customers.Select(c => mapper.Map<CustomerDtoWithCar>(c));
         }
 
         [HttpGet("GetCustomerById/{CustomerId}")]
-        public ActionResult<CustomerDto> GetCustomer(int CustomerId)
+        public ActionResult<CustomerDtoWithCar> GetCustomer(int CustomerId)
         {
             var customer = customerRepository.GetById(CustomerId);
-            if (customer != null)
+            if (customer is not null)
             {
-                CustomerDto customerDto = mapper.Map<CustomerDto>(customer);
-
+                CustomerDtoWithCar customerDto = mapper.Map<CustomerDtoWithCar>(customer);
                 return customerDto;
             }
             return NotFound("Custumer Not Found");
@@ -51,10 +56,10 @@ namespace Car_Sharing.ApiHelper.Controllers
         }
 
         [HttpPut("EditCustomer")]
-        public IActionResult EditCustomer(Customer customer)
+        public IActionResult EditCustomer(CustomerDtoEdit customer)
         {
             Customer? customerdb = customerRepository.GetById(customer.Id);
-            if (customerdb != null)
+            if (customerdb is not null)
             {
                 customerdb.Name = customer.Name;
                 customerdb.Rented_Car_Id = customer.Rented_Car_Id;
@@ -62,10 +67,10 @@ namespace Car_Sharing.ApiHelper.Controllers
                 {
                     return Ok();
                 }
-
             }
-            return StatusCode(500, "Failed to Update Customer");
+            return NotFound("Customer to edit not found");
         }
+
         [HttpPost("AddCustomer")]
         public IActionResult AddCustomer(CustomerAddDto customer)
         {
@@ -76,6 +81,22 @@ namespace Car_Sharing.ApiHelper.Controllers
                 return Ok();
             }
             return StatusCode(500, "Failed Add User");
+        }
+
+        [HttpDelete]
+        public IActionResult Remove(int customerId)
+        {
+            Customer? customer = customerRepository.GetById(customerId);
+            if (customer is not null)
+            {
+                customerRepository.Remove(customer);
+                if (customerRepository.SaveChanges())
+                {
+                    return Ok();
+                }
+            }
+            return NotFound("Customer to remove not found ");
+
         }
     }
 }

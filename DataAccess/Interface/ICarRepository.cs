@@ -16,5 +16,7 @@ namespace Car_Sharing.DataAccess.Interface
         public Car? GetByName(string name);
 
         public IEnumerable<Car>? GetAllCarsWithCompany(Company? company);
+
+        public void Remove(Car entity);
     }
 }

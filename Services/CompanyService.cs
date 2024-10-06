@@ -42,5 +42,9 @@ namespace Car_Sharing.Services
         {
             return companyRepository.GetAll();
         }
+        public void LoadCompanyCar(Company company)
+        {
+            companyRepository.LoadingCompanyReferences(company);
+        }
     }
 }

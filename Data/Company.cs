@@ -10,7 +10,6 @@ namespace Car_Sharing.Models
     {
         public int Id { get; set; }
         public string? Name { get; set; }
-        public List<Car>? ListOfCompanyCars { get; set; } = new List<Car>();
-
+        public IEnumerable<Car>? Cars { get; set; }
     }
 }

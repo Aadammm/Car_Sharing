@@ -7,6 +7,7 @@ using Car_Sharing.DataAccess.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System.Diagnostics.CodeAnalysis;
+using Car_Sharing.New_Dto;
 
 namespace Car_Sharing.ApiHelper.Controllers
 {
@@ -22,52 +23,64 @@ namespace Car_Sharing.ApiHelper.Controllers
             companyRepository = new CompanyRepository();
             mapper = new Mapper(new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<CompanyAddDto, Company>();
-                cfg.CreateMap<Car, CarBasicDto>();
+                cfg.CreateMap<CompanyDtoAdd, Company>();
+                cfg.CreateMap<Company, CompanyDto>();
                 cfg.CreateMap<Company, CompanyWithCarsDto>()
-                .ForMember(dest => dest.CompanyCars, opt => opt.MapFrom(src => src.ListOfCompanyCars));
-                cfg.CreateMap<Company, CompanyBasicDto>();
+                .ForMember(dest=>dest.Cars,opt=>opt.MapFrom(src=>src.Cars));
+                cfg.CreateMap<Car, CarDto>();
             }));
         }
         [HttpGet("GetCompanies")]
-        public IEnumerable<CompanyBasicDto> GetCompanies()
+        public IEnumerable<CompanyDto> GetCompanies()
         {
             var companies = companyRepository.GetAll();
-            IEnumerable<CompanyBasicDto> companiesBasicDto = mapper.Map<IEnumerable<CompanyBasicDto>>(companies);
+            IEnumerable<CompanyDto> companiesBasicDto = mapper.Map<IEnumerable<CompanyDto>>(companies);
             return companiesBasicDto;
         }
+
+        [HttpGet("GetCompaniesWithCars")]
+        public IEnumerable<CompanyWithCarsDto> GetCompaniesWithCars()
+        {
+            var companies = companyRepository.GetAll();
+            IEnumerable<CompanyWithCarsDto> companiesBasicDto = mapper.Map<IEnumerable<CompanyWithCarsDto>>(companies);
+            return companiesBasicDto;
+        }
+
         [HttpGet("GetCompanyById/{companyId}")]
-        public IActionResult GetCompany(int companyId)
+        public ActionResult<CompanyWithCarsDto> GetCompanyById(int companyId)
         {
             Company? company = companyRepository.GetById(companyId);
-            if (company != null)
+            if (company is not null)
             {
-                var companyWithCarsDto = mapper.Map<CompanyWithCarsDto>(company);
-                return Ok(companyWithCarsDto);
+                var ccc = mapper.Map<CompanyWithCarsDto>(company);
+                return ccc;
+
+
             }
             return NotFound("Company Not Found");
         }
 
         [HttpPut("EditCompany")]
-        public IActionResult EditCompany(Company company)
+        public IActionResult EditCompany(CompanyDto companyEdit)
         {
-            Company? editcompany = companyRepository.GetById(company.Id);
-            if (editcompany != null)
+            Company? company = companyRepository.GetById(companyEdit.Id);
+            if (company is not null)
             {
-                editcompany.Name = company.Name;
+                company.Name = companyEdit.Name;
                 if (companyRepository.SaveChanges())
                 {
                     return Ok();
                 }
 
             }
-            return StatusCode(500, "Failed to Update Company");
+            return NotFound("Company Not Found");
 
         }
+
         [HttpPost("AddCompany")]
-        public IActionResult AddCompany(CompanyAddDto companydto)
+        public IActionResult AddCompany(CompanyDtoAdd companydtoAdd)
         {
-            Company company = mapper.Map<Company>(companydto);
+            Company company = mapper.Map<Company>(companydtoAdd);
             companyRepository.AddEntity(company);
             if (companyRepository.SaveChanges())
             {
@@ -76,5 +89,20 @@ namespace Car_Sharing.ApiHelper.Controllers
             return StatusCode(500, "Failed Add Company");
         }
 
+        [HttpDelete]
+        public IActionResult Remove(int companyId)
+        {
+            Company? company = companyRepository.GetById(companyId);
+            if (company is not null)
+            {
+                companyRepository.Remove(company);
+                if (companyRepository.SaveChanges())
+                {
+                    return Ok();
+                }
+            }
+            return NotFound("Company to remove not found ");
+
+        }
     }
 }

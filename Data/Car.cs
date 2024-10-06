@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Car_Sharing.Dtos;
+using System.Text.Json.Serialization;
 
 namespace Car_Sharing.Models
 {
@@ -10,9 +7,10 @@ namespace Car_Sharing.Models
     {
         public int Id { get; set; }
         public string? Name { get; set; }
-        public Company? CompanyCar { get; set; }
-        public Customer? CustomerCar { get; set; }
-        public int Company_Id { get; set; }
+        public required int Company_Id { get; set; }
+        public  Company Company { get; set; }
+        public int? Customer_Id { get; set; }
 
+        public Customer? Customer { get; set; }
     }
 }

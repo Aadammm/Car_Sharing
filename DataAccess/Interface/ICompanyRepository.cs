@@ -4,25 +4,16 @@ namespace Car_Sharing.DataAccess.Interface
 {
     public interface ICompanyRepository
     {
-         Company? GetByName(string name);
+        Company? GetByName(string name);
 
-         void AddEntity(Company entity);
+        void AddEntity(Company entity);
 
-         IEnumerable<Company> GetAll();
+        IEnumerable<Company> GetAll();
 
-         bool SaveChanges();
+        bool SaveChanges();
 
-
-
-
-
-
-
-
-
-
-
-
-         Company? GetById(int id);
+        Company? GetById(int id);
+        void LoadingCompanyReferences(Company company);
+        void Remove(Company company);
     }
 }

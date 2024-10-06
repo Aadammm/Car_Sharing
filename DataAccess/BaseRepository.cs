@@ -1,9 +1,10 @@
 ﻿using Car_Sharing.Data;
+using Microsoft.EntityFrameworkCore;
 namespace Car_Sharing.DataAccess
 {
     public class BaseRepository<T> where T : class
     {
-        public EntityFramework _ef;
+        protected EntityFramework _ef;
 
         public BaseRepository()
         {
@@ -16,6 +17,14 @@ namespace Car_Sharing.DataAccess
         public virtual bool SaveChanges()
         {
             return _ef.SaveChanges() > 0;
+        }
+        public virtual void Update(T entity)
+        {
+             _ef.Update(entity);
+        }
+        public virtual void Remove(T entity)
+        {
+            _ef.Remove(entity);
         }
         public virtual T? GetById(int id)
         {

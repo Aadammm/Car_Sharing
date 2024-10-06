@@ -6,7 +6,7 @@ namespace Car_Sharing.Dtos
     {
         public int Id { get; set; }
         public string? Name { get; set; }
-        public List<CarBasicDto>? CompanyCars { get; set; }
+        public List<CarDto>? Cars { get; set; }
 
     }
 }
