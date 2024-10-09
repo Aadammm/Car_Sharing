@@ -1,364 +1,361 @@
-﻿//using Car_Sharing.Data;
-//using Car_Sharing.DataAccess;
-//using Car_Sharing.Models;
-//using Car_Sharing.Services;
-//using System.Reflection;
-//using Car_Sharing.Properties;
+﻿using Car_Sharing.Data;
+using Car_Sharing.DataAccess;
 
-//namespace Car_Sharing.Presentation
-//{
-//    public class Menu
-//    {
-//        readonly CarService carService;
-//        readonly CompanyService companyService;
-//        readonly CustomerService customerService;
+using Car_Sharing.Services;
+using System.Reflection;
+using Car_Sharing.Properties;
 
-//        public Menu()
-//        {
-//            carService = new CarService(new CarRepository());
-//            companyService = new CompanyService(new CompanyRepository());
-//            customerService = new CustomerService(new CustomerRepository());
+namespace Car_Sharing.Presentation
+{
+    public class Menu
+    {
+        readonly CarService carService;
+        readonly CompanyService companyService;
+        readonly CustomerService customerService;
 
-//        }
+        public Menu()
+        {
+            carService = new CarService(new CarRepository());
+            companyService = new CompanyService(new CompanyRepository());
+            customerService = new CustomerService(new CustomerRepository());
 
-//        public void StartMenu()
-//        {
-//            Console.WriteLine("1. Log in as a manager\n2. Log in as a customer\n3. Create a customer\n0. Exit");
-//            switch (Choise(3))
-//            {
-//                case 1:
-//                    LogAsManager();
-//                    break;
-//                case 2:
-//                    CustomerMenu(LogAsCustomer());
-//                    break;
-//                case 3:
-//                    CreateAndSaveCustomer();
-//                    StartMenu();
-//                    break;
-//                case 0:
-//                    break;
-//            }
-//        }
+        }
 
-//        private void LogAsManager()
-//        {
-//            Console.WriteLine("1. Company list\n2. Create a company\n" + Resource.back);
-//            switch (Choise(3))
-//            {
-//                case 1:
-//                    CompanyMenu(ChooseCompany());
-//                    break;
-//                case 2:
-//                    CreateCompany();
-//                    LogAsManager();
-//                    break;
-//                case 0:
-//                    StartMenu();
-//                    break;
-//            }
-//        }
+        public void StartMenu()
+        {
+            Console.WriteLine("1. Log in as a manager\n2. Log in as a customer\n3. Create a customer\n0. Exit");
+            switch (Choise(3))
+            {
+                case 1:
+                    LogAsManager();
+                    break;
+                case 2:
+                    CustomerMenu(LogAsCustomer());
+                    break;
+                case 3:
+                    CreateAndSaveCustomer();
+                    StartMenu();
+                    break;
+                case 0:
+                    break;
+            }
+        }
 
-//        private void CompanyMenu(Company? company)
-//        {
-//            if (company != null)
-//            {
-//                Console.WriteLine("{0} Company", company.Name);
-//                Console.WriteLine("1. Car list\n2. Create a car\n" + Resource.back);
-//                switch (Choise(3))
-//                {
-//                    case 1:
-//                        ChooseCar(company, false);
-//                        CompanyMenu(company);
-//                        break;
-//                    case 2:
-//                        CreateCar(company.Id);
-//                        CompanyMenu(company);
-//                        break;
-//                    case 0:
-//                        LogAsManager();
-//                        break;
-//                    default:
-//                        break;
-//                }
-//            }
-//            else
-//            {
-//                Console.WriteLine(Resource.emptyListMessageFormat, nameof(company));
-//                LogAsManager();
-//            }
-//        }
+        private void LogAsManager()
+        {
+            Console.WriteLine("1. Company list\n2. Create a company\n" + Resource.back);
+            switch (Choise(3))
+            {
+                case 1:
+                    CompanyMenu(ChooseCompany());
+                    break;
+                case 2:
+                    CreateCompany();
+                    LogAsManager();
+                    break;
+                case 0:
+                    StartMenu();
+                    break;
+            }
+        }
 
-//        private void CustomerMenu(Customer? customer)
-//        {
-//            if (customer != null)
-//            {
-//                Console.WriteLine("1. Rent a car\n2. Return a rented car\n3. My rented car\n" + Resource.back);
-//                switch (Choise(3))
-//                {
-//                    case 1:
-//                        RentCar(customer);
-//                        CustomerMenu(customer);
-//                        break;
-//                    case 2:
-//                        ReturnRentedCar(customer);
-//                        CustomerMenu(customer);
-//                        break;
-//                    case 3:
-//                        RentedCar(customer);
-//                        CustomerMenu(customer);
-//                        break;
-//                    case 0:
-//                        StartMenu();
-//                        break;
-//                }
-//            }
-//            else
-//            {
-//                StartMenu();
-//            }
-//        }
-//        private Customer? LogAsCustomer()
-//        {
-//            List<Customer> customers = customerService.GetCustomers().ToList();
-//            int listCount = customers.Count;
-//            if (listCount > 0)
-//            {
-//                Console.WriteLine(Resource.selectEntityPromptFormat, nameof(Customer));
-//                Display(customers);
-//                Console.WriteLine(Resource.back);
+        private void CompanyMenu(Company? company)
+        {
+            if (company is not null)
+            {
+                Console.WriteLine("{0} Company", company.Name);
+                Console.WriteLine("1. Car list\n2. Create a car\n" + Resource.back);
+                switch (Choise(3))
+                {
+                    case 1:
+                        ChooseCar(company, false);
+                        CompanyMenu(company);
+                        break;
+                    case 2:
+                        CreateCar(company.Id);
+                        companyService.Reload(company);
+                        CompanyMenu(company);
+                        break;
+                    case 0:
+                        LogAsManager();
+                        break;
+                    default:
+                        break;
+                }
+            }
+            else
+            {
+                Console.WriteLine(Resource.emptyListMessageFormat, nameof(company));
+                LogAsManager();
+            }
+        }
 
-//                int index = Choise(listCount);
-//                if (index > 0)
-//                {
-//                    return customers[index - 1];
-//                }
+        private void CustomerMenu(Customer? customer)
+        {
+            if (customer is not null)
+            {
+                Console.WriteLine("1. Rent a car\n2. Return a rented car\n3. My rented car\n" + Resource.back);
+                switch (Choise(3))
+                {
+                    case 1:
+                        RentCar(customer);
+                        CustomerMenu(customer);
+                        break;
+                    case 2:
+                        ReturnRentedCar(customer);
+                        CustomerMenu(customer);
+                        break;
+                    case 3:
+                        RentedCar(customer);
+                        CustomerMenu(customer);
+                        break;
+                    case 0:
+                        StartMenu();
+                        break;
+                }
+            }
+            else
+            {
+                StartMenu();
+            }
+        }
+        private Customer? LogAsCustomer()
+        {
+            List<Customer> customers = customerService.GetCustomers().ToList();
+            int listCount = customers.Count;
+            if (listCount > 0)
+            {
+                Console.WriteLine(Resource.selectEntityPromptFormat, nameof(Customer));
+                Display(customers);
+                Console.WriteLine(Resource.back);
 
-//                return null;
-//            }
-//            Console.WriteLine(Resource.emptyListMessageFormat, nameof(Customer));
-//            return null;
-//        }
+                int index = Choise(listCount);
+                if (index > 0)
+                {
+                    return customers[index - 1];
+                }
 
-//        private void RentCar(Customer customer)
-//        {
-//            if (customer.Rented_Car_Id is null)
-//            {
-//                Car? car = ChooseCar(ChooseCompany(), true);
-//                if (car is not null)
-//                {
-//                    bool carIsAlreadyRented = customerService.GetCustomers().FirstOrDefault(c => c.Rented_Car_Id == car.Id) != null;
-//                    if (customerService.RentCar(customer, car))
-//                    {
-//                        Console.WriteLine("You rented {0}\n", car.Name);
-//                    }
-//                    else if (carIsAlreadyRented)
-//                    {
-//                        Console.WriteLine("This car is already Rented");
-//                    }
-//                    else
-//                    {
-//                        Console.WriteLine("Failed rent a car\n");
-//                    }
-//                }
+                return null;
+            }
+            Console.WriteLine(Resource.emptyListMessageFormat, nameof(Customer));
+            return null;
+        }
 
-//            }
-//            else
-//            {
-//                Console.WriteLine("You've already rented a car!");
-//            }
-//        }
+        private void RentCar(Customer customer)
+        {
+            if (!   customer.Rented_Car_Id.HasValue)
+            {
+                Car? car = ChooseCar(ChooseCompany(), true);
+                if (car is not null)
+                {
 
-//        private void RentedCar(Customer customer)
-//        {
-//            Car? car = customerService.AlreadyRentedCar(customer);
+                    if (customerService.RentCar(customer, car))
+                    {
+                        car.Customer_Id = customer.Id;
+                        Console.WriteLine("You rented {0}\n", car.Name);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Failed rent a car\n");
+                    }
+                }
 
-//            if (car is null)
-//            {
-//                Console.WriteLine("You didn't rent a car!\n");
+            }
+            else
+            {
+                Console.WriteLine("You've already rented a car!");
+            }
+        }
 
-//            }
-//            else
-//            {
-//                Console.WriteLine("Your rented car:\n{0}\nCompany:\n{1}\n", car.Name, car.CompanyCar?.Name);
-//            }
-//        }
+        private void RentedCar(Customer customer)
+        {
 
-//        private void ReturnRentedCar(Customer customer)
-//        {
-//            if (customer.Car != null)
-//            {
+            if (customer.Rented_Car_Id.HasValue)
+            {
+                Car? car = carService.GetById(customer.Rented_Car_Id.Value);
+                Console.WriteLine("Your rented car:\n{0}\nCompany:\n{1}\n", car.Name, car.Company.Name);
+            }
+            else
+            {
+                Console.WriteLine("You didn't rent a car!\n");
+            }
+        }
 
-//                if (customerService.ReturnCar(customer))
-//                {
-//                    Console.WriteLine("You've returned a rented car!\n");
-//                }
+        private void ReturnRentedCar(Customer customer)
+        {
+            if (customer.Rented_Car_Id.HasValue)
+            {
 
-//                else
-//                {
-//                    Console.WriteLine("Failed return a car\n");
-//                }
-//            }
-//            else
-//            {
-//                Console.WriteLine("You didn't rent a car!\n");
-//            }
-//        }
+                if (customerService.ReturnCar(customer))
+                {
+                    Console.WriteLine("You've returned a rented car!\n");
+                }
 
-//        private void CreateAndSaveCustomer()
-//        {
-//            Console.Write(Resource.promptForEntityNameFormat, nameof(Customer));
-//            string? nameOfCustomer = Console.ReadLine();
-//            if (!string.IsNullOrEmpty(nameOfCustomer))
-//            {
+                else
+                {
+                    Console.WriteLine("Failed return a car\n");
+                }
 
-//                if (customerService.CreateAndSaveCustomer(nameOfCustomer))
-//                {
-//                    Console.WriteLine(Resource.entityCreatedMessageFormat, nameof(Customer));
-//                }
+            }
 
-//                else
-//                    Console.WriteLine(Resource.entityCreationFailedMessageFormat, nameof(Customer));
-//            }
+            else
+            {
+                Console.WriteLine("You didn't rent a car!\n");
+            }
+        }
 
-//            else
-//                Console.WriteLine(Resource.entityNameRequiredMessageFormat, nameof(Customer));
-//        }
+        private void CreateAndSaveCustomer()
+        {
+            Console.Write(Resource.promptForEntityNameFormat, nameof(Customer));
+            string? nameOfCustomer = Console.ReadLine();
+            if (!string.IsNullOrEmpty(nameOfCustomer))
+            {
 
-//        private Car? ChooseCar(Company? company, bool choice)
-//        {
-//            if (company == null)
-//                return null;
+                if (customerService.CreateAndSaveCustomer(nameOfCustomer))
+                {
+                    Console.WriteLine(Resource.entityCreatedMessageFormat, nameof(Customer));
+                }
 
-//            var cars = company.CompanyCars;
-//            if (cars is not null)
-//            {
-//                var carsCount = cars.Count;
-//                Console.WriteLine("Car list:");
-//                Display(cars);
+                else
+                    Console.WriteLine(Resource.entityCreationFailedMessageFormat, nameof(Customer));
+            }
 
-//                if (choice)
-//                {
-//                    Console.WriteLine(Resource.back);
-//                    int index = Choise(carsCount);
+            else
+                Console.WriteLine(Resource.entityNameRequiredMessageFormat, nameof(Customer));
+        }
 
-//                    if (index > 0)
-//                    {
-//                        return cars[index - 1];
-//                    }
-//                }
-//                return null;
+        private Car? ChooseCar(Company? company, bool choice)
+        {
+            if (company == null)
+                return null;
 
-//            }
-//            else
-//                Console.WriteLine(Resource.emptyListMessageFormat, nameof(Car));
-//            return null;
-//        }
+            var cars = company.Cars.Where(car => !car.Customer_Id.HasValue).ToList();
+            var carsCount = cars.Count;
+            if (carsCount > 0)
+            {
+                Console.WriteLine("Car list:");
+                Display(cars.ToList());
 
-//        private void CreateCar(int companyId)
-//        {
-//            Console.WriteLine(Resource.promptForEntityNameFormat, nameof(Car));
-//            string? name = Console.ReadLine();
+                if (choice)
+                {
+                    Console.WriteLine(Resource.back);
+                    int index = Choise(carsCount);
 
-//            if (!string.IsNullOrEmpty(name))
-//            {
+                    if (index > 0)
+                    {
+                        return cars[index - 1];
+                    }
+                }
+                return null;
 
-//                if (carService.CreateAndSaveCar(companyId, name))
-//                {
-//                    Console.WriteLine(Resource.entityCreatedMessageFormat, nameof(Car));
-//                }
+            }
+            else
+                Console.WriteLine(Resource.emptyListMessageFormat, nameof(Car));
+            return null;
+        }
 
-//                else
-//                    Console.WriteLine(Resource.entityCreationFailedMessageFormat, nameof(Car));
-//            }
-//            else
-//                Console.WriteLine(Resource.entityNameRequiredMessageFormat, nameof(Car));
-//        }
+        private void CreateCar(int companyId)
+        {
+            Console.WriteLine(Resource.promptForEntityNameFormat, nameof(Car));
+            string? name = Console.ReadLine();
 
-//        private void CreateCompany()
-//        {
-//            Console.Write(Resource.promptForEntityNameFormat, nameof(Company));
-//            string? nameOfCompany = Console.ReadLine();
+            if (!string.IsNullOrEmpty(name))
+            {
 
-//            if (!string.IsNullOrEmpty(nameOfCompany))
-//            {
+                if (carService.CreateAndSaveCar(companyId, name))
+                {
+                    Console.WriteLine(Resource.entityCreatedMessageFormat, nameof(Car));
+                }
 
-//                if (companyService.CreateAndSaveCompany(nameOfCompany))
-//                {
-//                    Console.WriteLine(Resource.entityCreatedMessageFormat, nameof(Company));
-//                }
+                else
+                    Console.WriteLine(Resource.entityCreationFailedMessageFormat, nameof(Car));
+            }
+            else
+                Console.WriteLine(Resource.entityNameRequiredMessageFormat, nameof(Car));
+        }
 
-//                else
-//                    Console.WriteLine(Resource.entityCreationFailedMessageFormat, nameof(Company));
-//            }
+        private void CreateCompany()
+        {
+            Console.Write(Resource.promptForEntityNameFormat, nameof(Company));
+            string? nameOfCompany = Console.ReadLine();
 
-//            else
-//                Console.WriteLine(Resource.entityNameRequiredMessageFormat, nameof(Company));
-//        }
+            if (!string.IsNullOrEmpty(nameOfCompany))
+            {
 
-//        private Company? ChooseCompany()
-//        {
-//            var companies = companyService.GetCompanies().ToList();
-//            int listCount = companies.Count;
-//            if (listCount > 0)
-//            {
-//                Console.WriteLine(Resource.selectEntityPromptFormat, nameof(Company));
-//                Display(companies);
-//                Console.WriteLine(Resource.back);
+                if (companyService.CreateAndSaveCompany(nameOfCompany))
+                {
+                    Console.WriteLine(Resource.entityCreatedMessageFormat, nameof(Company));
+                }
 
-//                int index = Choise(listCount);
-//                if (index > 0)
-//                {
-//                    var company = companies[index - 1];
-//                    companyService.LoadCompanyCar(company);
-//                    return company;
-//                }
-//                return null;
-//            }
+                else
+                    Console.WriteLine(Resource.entityCreationFailedMessageFormat, nameof(Company));
+            }
 
-//            else
-//                Console.WriteLine(Resource.emptyListMessageFormat, nameof(Company));
-//            return null;
-//        }
+            else
+                Console.WriteLine(Resource.entityNameRequiredMessageFormat, nameof(Company));
+        }
 
-//        private int Choise(int numberOfChoise)
-//        {
-//            Console.Write(">>");
-//            int choise;
-//            while (int.TryParse(Console.ReadLine(), out choise) && choise < 0 || choise > numberOfChoise)
-//            {
-//                Console.WriteLine("Please choise correct number");
-//            }
-//            Console.WriteLine();
-//            return choise;
-//        }
+        private Company? ChooseCompany()
+        {
+            var companies = companyService.GetCompanies().ToList();
+            int listCount = companies.Count;
+            if (listCount > 0)
+            {
+                Console.WriteLine(Resource.selectEntityPromptFormat, nameof(Company));
+                Display(companies);
+                Console.WriteLine(Resource.back);
 
-//        private void Display<T>(List<T>? entities)
-//        {
-//            if (entities is not null)
-//            {
+                int index = Choise(listCount);
+                if (index > 0)
+                {
+                    var company = companies[index - 1];
+                    return company;
+                }
+                return null;
+            }
 
-//                for (int i = 0; i < entities.Count; i++)
-//                {
-//                    T? item = entities[i];
-//                    if (item is not null)
-//                    {
-//                        PropertyInfo? propertyInfo = item.GetType().GetProperty("Name");
+            else
+                Console.WriteLine(Resource.emptyListMessageFormat, nameof(Company));
+            return null;
+        }
 
-//                        if (propertyInfo is not null)
-//                        {
-//                            var name = propertyInfo.GetValue(item);
-//                            Console.WriteLine($"{i + 1}. {name?.ToString()}");
-//                        }
-//                    }
-//                    else
-//                    {
-//                        Console.WriteLine($"{i + 1}. [No name]");
-//                    }
-//                }
-//            }
-//        }
-//    }
+        private int Choise(int numberOfChoise)
+        {
+            Console.Write(">>");
+            int choise;
+            while (int.TryParse(Console.ReadLine(), out choise) && choise < 0 || choise > numberOfChoise)
+            {
+                Console.WriteLine("Please choise correct number");
+            }
+            Console.WriteLine();
+            return choise;
+        }
 
-//}
+        private void Display<T>(List<T>? entities)
+        {
+            if (entities is not null)
+            {
+                for (int i = 0; i < entities.Count; i++)
+                {
+                    T? item = entities[i];
+                    if (item is not null)
+                    {
+                        PropertyInfo? propertyInfo = item.GetType().GetProperty("Name");
+
+                        if (propertyInfo is not null)
+                        {
+                            var name = propertyInfo.GetValue(item);
+                            Console.WriteLine($"{i + 1}. {name?.ToString()}");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine($"{i + 1}. [No name]");
+                    }
+                }
+            }
+        }
+    }
+
+}
 

@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using Car_Sharing.Models;
 using Car_Sharing.DataAccess;
 using Car_Sharing.DataAccess.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Car_Sharing.Dto;
+using Car_Sharing.Data;
 
 namespace Car_Sharing.ApiHelper.Controllers
 {

@@ -1,8 +1,7 @@
-﻿
-using System.Diagnostics.CodeAnalysis;
-using Car_Sharing.Models;
-using Car_Sharing.DataAccess.Interface;
+﻿using Car_Sharing.DataAccess.Interface;
 using Microsoft.EntityFrameworkCore;
+using Car_Sharing.Data;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Car_Sharing.DataAccess
 {
@@ -14,7 +13,7 @@ namespace Car_Sharing.DataAccess
         }
         public override Car? GetById(int id)
         {
-            return _ef.Cars.Include(c=>c.Company).Include(c=>c.Customer).SingleOrDefault(c => c.Id == id);
+            return _ef.Cars.Include(c => c.Company).Include(c => c.Customer).SingleOrDefault(c => c.Id == id);
         }
 
         public Car? GetByName(string name)

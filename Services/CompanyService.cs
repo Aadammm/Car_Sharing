@@ -1,5 +1,5 @@
 ﻿using Car_Sharing.Data;
-using Car_Sharing.Models;
+
 using Car_Sharing.DataAccess.Interface;
 using System;
 using System.Collections.Generic;
@@ -22,9 +22,9 @@ namespace Car_Sharing.Services
         {
             return companyRepository.GetByName(name);
         }
-        public bool CreateAndSaveCompany( string name)
+        public bool CreateAndSaveCompany(string name)
         {
-            if (GetByName(name) == null)
+            if (GetByName(name) is null)
             {
                 companyRepository.AddEntity(new Company()
                 {
@@ -42,9 +42,14 @@ namespace Car_Sharing.Services
         {
             return companyRepository.GetAll();
         }
-        public void LoadCompanyCar(Company company)
+        public void Reload(Company company)
         {
-            companyRepository.LoadingCompanyReferences(company);
+            companyRepository.ReloadCompany(company);
+        }
+
+        public Company? GetById(int company_Id)
+        {
+        return  companyRepository.GetById(company_Id);
         }
     }
 }

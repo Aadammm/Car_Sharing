@@ -10,6 +10,11 @@ namespace Car_Sharing.DataAccess
         {
             _ef = new EntityFramework();
         }
+
+        public virtual void ReloadEntity(T entity)
+        {
+            _ef.Entry(entity).Reload();
+        }
         public virtual IEnumerable<T> GetAll()
         {
             return _ef.Set<T>();
@@ -20,7 +25,7 @@ namespace Car_Sharing.DataAccess
         }
         public virtual void Update(T entity)
         {
-             _ef.Update(entity);
+            _ef.Update(entity);
         }
         public virtual void Remove(T entity)
         {

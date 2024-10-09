@@ -1,7 +1,5 @@
-﻿using Car_Sharing.Models;
-using Microsoft.EntityFrameworkCore;
+﻿ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using System;
 
 
 namespace Car_Sharing.Data
@@ -26,6 +24,7 @@ namespace Car_Sharing.Data
         {
             if (!optionsBuilder.IsConfigured)
             {
+                optionsBuilder.EnableSensitiveDataLogging();//remove
                 optionsBuilder.UseSqlServer(config
                 .GetConnectionString("DefaultConnection"),
                 options => options.EnableRetryOnFailure());
@@ -48,6 +47,12 @@ namespace Car_Sharing.Data
                 .HasOne(c => c.Customer)
                 .WithOne(c => c.Car)
                 .HasForeignKey<Car>(c => c.Customer_Id);
+
+            modelBuilder.Entity<Customer>()
+                .HasOne(c=>c.Car)
+                .WithOne(c=>c.Customer)
+                .HasForeignKey<Customer>(c=>c.Rented_Car_Id);
+                
         }
 
     }

@@ -1,5 +1,4 @@
-﻿
-using Car_Sharing.Models;
+﻿using Car_Sharing.Data;
 
 namespace Car_Sharing.DataAccess.Interface
 {
@@ -16,7 +15,6 @@ namespace Car_Sharing.DataAccess.Interface
         public Car? GetByName(string name);
 
         public IEnumerable<Car>? GetAllCarsWithCompany(Company? company);
-
         public void Remove(Car entity);
     }
 }

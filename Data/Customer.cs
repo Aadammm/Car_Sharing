@@ -1,6 +1,4 @@
-﻿
-
-namespace Car_Sharing.Models
+﻿namespace Car_Sharing.Data
 {
     public class Customer
     {

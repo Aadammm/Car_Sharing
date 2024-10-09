@@ -1,4 +1,4 @@
-﻿using Car_Sharing.Models;
+﻿using Car_Sharing.Data;
 
 namespace Car_Sharing.DataAccess.Interface
 {
@@ -13,7 +13,9 @@ namespace Car_Sharing.DataAccess.Interface
         bool SaveChanges();
 
         Company? GetById(int id);
-        void LoadingCompanyReferences(Company company);
         void Remove(Company company);
+        void ReloadCompany(Company company);
+
+
     }
 }
