@@ -1,6 +1,4 @@
-﻿
-
-namespace Car_Sharing.Dto
+﻿namespace Car_Sharing.Dto
 {
     public class CarDtoAdd
     {

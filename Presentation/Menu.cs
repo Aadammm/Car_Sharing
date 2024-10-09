@@ -1,6 +1,5 @@
 ﻿using Car_Sharing.Data;
 using Car_Sharing.DataAccess;
-
 using Car_Sharing.Services;
 using System.Reflection;
 using Car_Sharing.Properties;
@@ -151,7 +150,7 @@ namespace Car_Sharing.Presentation
 
                     if (customerService.RentCar(customer, car))
                     {
-                        car.Customer_Id = customer.Id;
+                        
                         Console.WriteLine("You rented {0}\n", car.Name);
                     }
                     else

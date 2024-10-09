@@ -1,14 +1,5 @@
 ﻿using Car_Sharing.Data;
-
-using Car_Sharing.DataAccess;
 using Car_Sharing.DataAccess.Interface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Runtime.ConstrainedExecution;
-
 namespace Car_Sharing.Services
 {
     public class CustomerService(ICustomerRepository cRepository)
@@ -57,12 +48,12 @@ namespace Car_Sharing.Services
             return null;
         }
 
-        public bool RentCar(Customer customer, Car car)// kontrola ked je auto zarezervovane nemoze sa rezervovat znovu 
+        public bool RentCar(Customer customer, Car car)
         {
             if (customer.Car is null)
             {
                 customer.Rented_Car_Id = car.Id;
-                //customer.Car = car; // vyhadzuje konflikt
+                car.Customer_Id = customer.Id;
                 return SaveChange();
             }
             return false;

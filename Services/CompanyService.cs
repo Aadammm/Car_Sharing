@@ -1,12 +1,5 @@
 ﻿using Car_Sharing.Data;
-
 using Car_Sharing.DataAccess.Interface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Car_Sharing.DataAccess;
 
 namespace Car_Sharing.Services
 {

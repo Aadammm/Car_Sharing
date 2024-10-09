@@ -1,7 +1,6 @@
 ﻿using Car_Sharing.DataAccess.Interface;
 using Microsoft.EntityFrameworkCore;
 using Car_Sharing.Data;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Car_Sharing.DataAccess
 {
@@ -25,7 +24,7 @@ namespace Car_Sharing.DataAccess
         {
             if (company is not null)
             {
-                return _ef.Cars.Include(car => car.Company).Where(c => c.Company.Id == company.Id).ToList();
+                return [.. _ef.Cars.Include(car => car.Company).Where(c => c.Company.Id == company.Id)];
             }
             return Enumerable.Empty<Car>().ToList();
         }
