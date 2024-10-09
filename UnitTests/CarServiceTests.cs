@@ -1,6 +1,5 @@
 ﻿using Car_Sharing.Data;
 using Car_Sharing.DataAccess.Interface;
-using Car_Sharing.Models;
 using Car_Sharing.Services;
 using Moq;
 using NUnit.Framework;
@@ -18,38 +17,39 @@ namespace Car_Sharing_Tests
         {
             mockRepository = new Mock<ICarRepository>();
             service = new CarService(mockRepository.Object);
-                                                          
+
         }
         [TestCase(1)]
         [TestCase(756)]
         [TestCase(15)]
         [TestCase(5)]
-        public void GetById_ShouldReturnCar_IfCarExistInDatabase(int id )
+        public void GetById_ShouldReturnCar_IfCarExistInDatabase(int id)
         {
             var car = new Car()
             {
-                Id=5,
-                Name="car"
+                Id = 5,
+                Name = "car",
+                Company_Id = 1
             };
-    
-        mockRepository.Setup(a=>a.GetById(It.Is<int>(id=>id>0))).Returns(car);
-    
-        var result = service.GetById(id);
-    
-        Assert.That(result, Is.EqualTo(car));
+
+            mockRepository.Setup(a => a.GetById(It.Is<int>(id => id > 0))).Returns(car);
+
+            var result = service.GetById(id);
+
+            Assert.That(result, Is.EqualTo(car));
         }
-        
+
         [TestCase(-1)]
         [TestCase(-756)]
         [TestCase(-15)]
         [TestCase(-5)]
         [TestCase(0)]
-        public void GetById_ShouldReturnNull_IfCarNotExistInDatabase(int id )
+        public void GetById_ShouldReturnNull_IfCarNotExistInDatabase(int id)
         {
             mockRepository.Setup(a => a.GetById(It.Is<int>(id => id < 0))).Returns((Car)null);
-        
+
             var result = service.GetById(id);
-        
+
             Assert.That(result, Is.Null);
         }
 
@@ -61,7 +61,8 @@ namespace Car_Sharing_Tests
         {
             var car = new Car()
             {
-                Name = name
+                Name = name,
+                Company_Id = 1
             };
             mockRepository.Setup(c => c.GetByName(name)).Returns(car);
 
@@ -106,7 +107,6 @@ namespace Car_Sharing_Tests
         [Test]
         public void AllCarsWithCompany_ShouldReturnIEnumerableOfCars_IfExistsInDatabase()
         {
-            //arrange
             var company = new Company()
             {
                 Name = "testCompany",
@@ -116,18 +116,18 @@ namespace Car_Sharing_Tests
             new Car()
             {
                 Id = 1,
-                Name = "Lambo"
+                Name = "Lambo",
+                Company_Id = 1
             },new Car()
             {
                 Id = 12,
                 Name = "BMW"
+                ,Company_Id = 1
             }   };
             mockRepository.Setup(m => m.GetAllCarsWithCompany(company)).Returns(cars);
 
-            // Act
             var result = service.AllCarsWithCompany(company);
 
-            // Assert
             CollectionAssert.AreEquivalent(result, cars);
         }
 
@@ -169,7 +169,7 @@ namespace Car_Sharing_Tests
         public void CreateCar_ShouldReturnFalse_IfCarAlreadyExists(string name)
         {
             var company = new Company { Id = 1, Name = "testComapny" };
-            var existingCar = new Car { Name = name };
+            var existingCar = new Car { Name = name , Company_Id = 1 };
 
             mockRepository.Setup(m => m.GetByName(name)).Returns(existingCar);
 

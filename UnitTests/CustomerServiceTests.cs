@@ -2,8 +2,8 @@
 using Car_Sharing.DataAccess.Interface;
 using Moq;
 using NUnit.Framework;
-using Car_Sharing.Models;
 using NUnit.Framework.Legacy;
+using Car_Sharing.Data;
 namespace Car_Sharing_Tests
 {
     public class CustomerServiceTests
@@ -133,7 +133,8 @@ namespace Car_Sharing_Tests
         [Test]
         public void ReturnCar_ShouldReturnTrue_IfCarWasReturned()
         {
-            var customer = new Customer();
+            var customer = new Customer()
+            { Name="customer"};
             mockRepository.Setup(m => m.SaveChanges()).Returns(false);
 
             var result = service.ReturnCar(customer);
@@ -143,7 +144,8 @@ namespace Car_Sharing_Tests
         [Test]
         public void ReturnCar_ShouldReturnFalse_IfCarWasNotReturnSuccessful()
         {
-            var customer = new Customer();
+            var customer = new Customer()
+            { Name = "customer" };
             mockRepository.Setup(m => m.SaveChanges()).Returns(true);
 
             var result = service.ReturnCar(customer);
@@ -154,8 +156,8 @@ namespace Car_Sharing_Tests
         [Test]
         public void RentCar_ShouldReturnTrue_IfReturnCarWasSuccess()
         {
-            var customer = new Customer();
-            var car = new Car();
+            var customer = new Customer() { Name = "customer" };
+            var car = new Car() { Company_Id=1};
             mockRepository.Setup(m => m.SaveChanges()).Returns(true);
 
             var result = service.RentCar(customer, car);
@@ -166,8 +168,8 @@ namespace Car_Sharing_Tests
         [Test]
         public void RentCar_ShouldReturnFalse_IfReturnCarWasNotSuccess()
         {
-            var customer = new Customer();
-            var car = new Car();
+            var customer = new Customer() { Name = "customer" };
+            var car = new Car() { Company_Id = 1 };
             mockRepository.Setup(m => m.SaveChanges()).Returns(false);
 
             var result = service.RentCar(customer, car);
@@ -180,6 +182,7 @@ namespace Car_Sharing_Tests
         {
             var customer = new Customer()
             {
+                Name ="customer",
                 Rented_Car_Id = 0
             };
             var result = service.AlreadyRentedCar(customer);
@@ -190,14 +193,8 @@ namespace Car_Sharing_Tests
         [Test]
         public void AlreadyRentedCar_ShouldReturnCar_IfCustomerHaveRentCar()
         {
-            var expectedCar = new Car()
-            {
-                Id = 5
-            };
-            var customer = new Customer()
-            {
-                Car = expectedCar
-            };
+               var expectedCar = new Car() { Id = 5,Company_Id=1 };
+            var customer = new Customer() { Id = 5,Name = "customer", Car = expectedCar };
             var result = service.AlreadyRentedCar(customer);
 
             Assert.That(result, Is.EqualTo(expectedCar));
@@ -210,7 +207,7 @@ namespace Car_Sharing_Tests
             bool premenna = true;
             Assert.That(premenna, Is.True); 
             Assert.That(premenna, Is.False);
-            Assert.That(premenna, Is.EqualTo(true));;
+            Assert.That(premenna, Is.EqualTo(true));
             Assert.That(premenna, Is.EqualTo(false));
             Assert.That(premenna, Is.Null);
             Assert.That(premenna, Is.Not.Null);

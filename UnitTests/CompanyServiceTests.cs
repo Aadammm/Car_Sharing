@@ -1,5 +1,5 @@
-﻿using Car_Sharing.DataAccess.Interface;
-using Car_Sharing.Models;
+﻿using Car_Sharing.Data;
+using Car_Sharing.DataAccess.Interface;
 using Car_Sharing.Services;
 using Moq;
 using NUnit.Framework;
@@ -17,7 +17,7 @@ namespace Car_Sharing_Tests
         {
             mockRepository = new Mock<ICompanyRepository>();
             service = new CompanyService(mockRepository.Object);
-                                                                 
+
         }
 
         [TestCase("Company")]
@@ -28,7 +28,7 @@ namespace Car_Sharing_Tests
         {
             var company = new Company()
             {
-                Name=name
+                Name = name
             };
             mockRepository.Setup(c => c.GetByName(name)).Returns(company);
 
@@ -73,7 +73,6 @@ namespace Car_Sharing_Tests
         [Test]
         public void GetCompanies_ShouldReturnIEnumerableOfCompanies_IfExistsInDatabase()
         {
-            //arrange
             var companies = new List<Company>() {
             new Company()
             {
@@ -87,12 +86,12 @@ namespace Car_Sharing_Tests
             mockRepository.Setup(m => m.GetAll()).Returns(companies);
 
             var result = service.GetCompanies();
-           
+
             CollectionAssert.AreEquivalent(result, companies);
         }
         [Test]
         public void GetCompanies_ShouldReturnEmptyEnumerable_IfNotExistCompaniesInDatabase()
-        { 
+        {
             mockRepository.Setup(m => m.GetAll()).Returns(Enumerable.Empty<Company>());
 
             var result = service.GetCompanies();
@@ -106,7 +105,7 @@ namespace Car_Sharing_Tests
         [TestCase("AllCars")]
         public void CreateCompany_ShouldReturnTrue_IfCompanyWasCreatedSuccessful(string name)
         {
-            mockRepository.Setup(m=>m.GetByName(name)).Returns((Company)null);
+            mockRepository.Setup(m => m.GetByName(name)).Returns((Company)null);
             mockRepository.Setup(m => m.AddEntity(It.Is<Company>(c => c.Name == name)));
             mockRepository.Setup(m => m.SaveChanges()).Returns(true);
 
