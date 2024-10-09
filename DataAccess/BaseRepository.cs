@@ -1,5 +1,4 @@
-﻿using Car_Sharing.Data;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 namespace Car_Sharing.DataAccess
 {
     public class BaseRepository<T> where T : class
